@@ -1,0 +1,43 @@
+<package xmlns="http://expath.org/ns/pkg" xmlns:dc="http://dublincore.org/documents/dces/" xmlns:pkg="http://cxan.org/ns/package"
+	name="${package-name}" abbrev="${package-abbrev}" version="${project.version}" spec="1.0">
+	<title>${package-title}</title>
+	<dependency processor="http://exist-db.org/" />
+	<dependency package="http://expath.org/lib/${module-prefix}" />
+	<dc:creator id="cteodorescu">Claudius Teodorescu</dc:creator>
+	<dc:identifier></dc:identifier>
+	<dc:rights>GNU-LGPL</dc:rights>
+	<dc:type>library</dc:type>
+	<pkg:module-prefix>${module-prefix}</pkg:module-prefix>
+	<module-namespace>${module-namespace}</module-namespace>
+	<pkg:cxan-tags>${module-prefix},expath,${package-type},exist</pkg:cxan-tags>
+	<pkg:cxan-category id="libs">Libraries</pkg:cxan-category>
+	<pkg:cxan-category id="exist">eXist extensions</pkg:cxan-category>
+	<status xmlns="http://exist-db.org/xquery/repo">stable</status>
+	<copyright xmlns="http://exist-db.org/xquery/repo">true</copyright>
+	<target xmlns="http://exist-db.org/xquery/repo">expath-${module-prefix}</target>
+	<fileSets>
+		<fileSet>
+			<directory>${basedir}/expath-specs</directory>
+		</fileSet>
+		<fileSet>
+			<directory>${basedir}/expath-specs</directory>
+			<includes>
+				<include>icon.png</include>
+			</includes>
+			<outputDirectory>content</outputDirectory>
+			<!-- <filtered>true</filtered> -->
+		</fileSet>
+	</fileSets>
+	<dependencySets>
+		<dependencySet>
+			<groupId>org.apache.maven.doxia</groupId>
+			<artifactId>doxia-module-apt</artifactId>
+			<version>1.4</version>
+		</dependencySet>
+		<dependencySet>
+			<groupId>org.apache.maven.plugin-testing</groupId>
+			<artifactId>maven-plugin-testing-harness</artifactId>
+			<version>2.1</version>
+		</dependencySet>
+	</dependencySets>
+</package>

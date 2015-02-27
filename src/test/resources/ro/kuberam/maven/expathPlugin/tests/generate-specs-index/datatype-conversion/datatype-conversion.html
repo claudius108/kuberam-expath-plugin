@@ -1,0 +1,475 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" lang="">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+      <title>DataType Conversion Module 1.0</title>
+      <link rel="stylesheet" type="text/css" href="http://www.w3.org/StyleSheets/TR/base.css" /><style type="text/css">
+code           { font-family: monospace; }
+
+div.constraint,
+div.issue,
+div.note,
+div.notice     { margin-left: 2em; }
+
+ol.enumar      { list-style-type: decimal; }
+ol.enumla      { list-style-type: lower-alpha; }
+ol.enumlr      { list-style-type: lower-roman; }
+ol.enumua      { list-style-type: upper-alpha; }
+ol.enumur      { list-style-type: upper-roman; }
+
+
+div.exampleInner pre { margin-left: 1em;
+                       margin-top: 0em; margin-bottom: 0em}
+div.exampleOuter {border: 4px double gray;
+                  margin: 0em; padding: 0em}
+div.exampleInner { background-color: #d5dee3;
+                   border-top-width: 4px;
+                   border-top-style: double;
+                   border-top-color: #d3d3d3;
+                   border-bottom-width: 4px;
+                   border-bottom-style: double;
+                   border-bottom-color: #d3d3d3;
+                   padding: 4px; margin: 0em }
+div.exampleWrapper { margin: 4px }
+div.exampleHeader { font-weight: bold;
+                    margin: 4px}
+
+      code.function { font-weight: bold; }
+      code.type { font-style: italic; }
+      /* h1, h2, h3 { color: #84001C; background: white } */
+      /* a, :link, :visited, a:active { color: #84005C; background: white } */
+      body {
+        background-image: url(http://expath.org/images/logo-candidate.png);
+      }
+   </style></head>
+   <body>
+      <p><a href="http://expath.org/"><img src="http://expath.org/images/expath-icon.png" alt="EXPath" height="32" width="32" /></a></p>
+      <div class="head">
+         
+         <h1><a name="title" id="title"></a>DataType Conversion Module 1.0
+         </h1>
+         
+         <h2><a name="w3c-doctype" id="w3c-doctype"></a>EXPath Candidate Module 08 November 2012
+         </h2>
+         <dl>
+            <dt>Latest version:</dt>
+            <dd>
+               <a href="http://expath.org/spec/datatype-conversion">http://expath.org/spec/datatype-conversion</a>
+               
+            </dd>
+            <dt>Editor:</dt>
+            <dd>Claudius Teodorescu, XML Consultant</dd>
+         </dl>
+         <p class="copyright">
+            			Copyright © 2012-2013 Claudius Teodorescu, published by the
+            			<a href="http://w3.org/community/expath/">EXPath Community Group</a>
+            			under the
+            			<a href="https://www.w3.org/community/about/agreements/cla/">W3C Community Contributor
+               				License Agreement (CLA)</a>
+            			. A human-readable
+            			<a href="http://www.w3.org/community/about/agreements/cla-deed/">summary</a>
+            			is
+            			available.
+            		
+         </p>
+         <p class="copyright">
+            			This specification was published by the
+            			<a href="http://www.w3.org/community/expath/">EXPath Community Group</a>
+            			. It is not a W3C Standard nor is it on the W3C
+            			Standards Track. Please note that under the
+            			<a href="http://www.w3.org/community/about/agreements/cla/">W3C Community Contributor
+               				License Agreement (CLA)</a>
+            			there is a limited opt-out and other conditions apply.
+            			Learn more about
+            			<a href="http://www.w3.org/community/">W3C Community and Business
+               				Groups</a>
+            			.
+            		
+         </p>
+      </div>
+      <hr />
+      <div>
+         
+         <h2><a name="abstract" id="abstract"></a>Abstract
+         </h2>
+         <p>This proposal defines a <span>module for providing conversions between various XPath Data Model datatypes</span>.
+            It has been designed to be compatible with XQuery 3.0 and XSLT 3.0, as well as any
+            other standard based on XPath 3.0.
+         </p>
+         <p>As this is a work in progress, more details about it can be found at
+            <a href="https://docs.google.com/document/d/1aLoJHvzG9zFaTNM110xMjg-qMHT7vYtWpcBmYoawSJE/pub">Datatype Conversion Functions Comparison</a>.
+         </p>
+      </div>
+      <div class="toc">
+         
+         <h2><a name="contents" id="contents"></a>Table of Contents
+         </h2>
+         <p class="toc">1 <a href="#d4e74">Introduction</a><br />
+            1.1 <a href="#d4e81">Namespace conventions</a><br />
+            1.2 <a href="#d4e100">Error management</a><br />
+            2 <a href="#d4e111">xs:base64Binary to other datatypes</a><br />
+            2.1 <a href="#d4e118">The dt-conv:base64Binary-to-byte function</a><br />
+            2.2 <a href="#d4e143">The dt-conv:base64Binary-to-string function</a><br />
+            3 <a href="#d4e186">xs:byte to other datatypes</a><br />
+            3.1 <a href="#d4e193">The dt-conv:byte-to-base64Binary function</a><br />
+            3.2 <a href="#d4e218">The dt-conv:byte-to-hexBinary function</a><br />
+            4 <a href="#d4e243">xs:hexBinary to other datatypes</a><br />
+            4.1 <a href="#d4e250">The dt-conv:hexBinary-to-byte function</a><br />
+            4.2 <a href="#d4e275">The dt-conv:hexBinary-to-string function</a><br />
+            5 <a href="#d4e318">xs:string to other datatypes</a><br />
+            5.1 <a href="#d4e325">The dt-conv:string-to-base64Binary function</a><br />
+            5.2 <a href="#d4e368">The dt-conv:string-to-hexBinary function</a><br />
+            5.3 <a href="#d4e411">The dt-conv:string-to-integer function</a><br />
+            6 <a href="#d4e444">xs:integer to other datatypes</a><br />
+            6.1 <a href="#d4e451">The dt-conv:integer-to-string function</a><br />
+            
+         </p>
+         
+         <h3><a name="appendices" id="appendices"></a>Appendices
+         </h3>
+         <p class="toc">A <a href="#d4e485">References</a><br />
+            B <a href="#d4e529">Summary of Error Conditions</a><br />
+            
+         </p>
+      </div>
+      <hr />
+      <div class="body">
+         <div class="div1">
+            
+            <h2><a name="d4e74" id="d4e74"></a>1 Introduction
+            </h2>
+            <p>This module is designed to help datatypes handling, providing conversions between
+               datatypes that are not covered by casts mentioned in
+               <a href="#xpath-functions-30">[XPath and XQuery Functions and Operators 3.0]</a>.
+            </p>
+            <div class="div2">
+               
+               <h3><a name="d4e81" id="d4e81"></a>1.1 Namespace conventions
+               </h3>
+               <p>The module defined by this document defines functions and elements in the namespace
+                  <code>http://expath.org/ns/datatype-conversion</code>. In this document, the
+                  <code>dt-conv</code> prefix, when used, is bound to this namespace URI.
+               </p>
+               <p>Error codes are defined in the namespace <code>http://expath.org/ns/error</code>. In
+                  this document, the <code>err</code> prefix, when used, is bound to this namespace
+                  URI.
+               </p>
+            </div>
+            <div class="div2">
+               
+               <h3><a name="d4e100" id="d4e100"></a>1.2 Error management
+               </h3>
+               <p>Error conditions are identified by a code (a <code>QName</code>). When such an error
+                  condition is reached during the execution of the function, a dynamic error is thrown,
+                  with the corresponding error code (as if the standard XPath function
+                  <code>error</code> had been called).
+               </p>
+            </div>
+         </div>
+         <div class="div1">
+            
+            <h2><a name="d4e111" id="d4e111"></a>2 <code>xs:base64Binary</code> to other datatypes
+            </h2>
+            <p>These functions provide conversion from xs:base64Binary datatype to other datatypes.</p>
+            <div class="div2">
+               
+               <h3><a name="d4e118" id="d4e118"></a>2.1 The <code>dt-conv:base64Binary-to-byte</code> function
+               </h3>
+               <p>This function converts from xs:base64Binary to xs:byte.</p>
+               <div class="exampleInner"><pre>
+<code class="function">dt-conv:base64Binary-to-byte</code>($data as <code class="type">xs:base64Binary?</code>) as <code class="type">xs:byte*</code>
+</pre></div>
+               <ul>
+                  <li>
+                     <p><code>$data</code> is the data to be converted.
+                     </p>
+                  </li>
+               </ul>
+            </div>
+            <div class="div2">
+               
+               <h3><a name="d4e143" id="d4e143"></a>2.2 The <code>dt-conv:base64Binary-to-string</code> function
+               </h3>
+               <p>This function converts from xs:base64Binary to xs:string.</p>
+               <div class="exampleInner"><pre>
+<code class="function">dt-conv:base64Binary-to-string</code>($data as <code class="type">xs:base64Binary?</code>) as <code class="type">xs:string?</code>
+</pre></div>
+               <div class="exampleInner"><pre>
+<code class="function">dt-conv:base64Binary-to-string</code>($data as <code class="type">xs:base64Binary?</code>,
+		$encoding as xs:string) as <code class="type">xs:string?</code>
+</pre></div>
+               <ul>
+                  <li>
+                     <p><code>$data</code> is the data to be converted.
+                     </p>
+                  </li>
+                  <li>
+                     <p><code>$encoding</code> is the encoding used for conversion. The default value is UTF-8. If it is specified
+                        an unsupported encoding, this
+                        is an error <a href="#errDTCONV01">[err:DTCONV01]</a>.
+                     </p>
+                  </li>
+               </ul>
+            </div>
+         </div>
+         <div class="div1">
+            
+            <h2><a name="d4e186" id="d4e186"></a>3 <code>xs:byte</code> to other datatypes
+            </h2>
+            <p>These functions provide conversion from xs:byte datatype to other datatypes.</p>
+            <div class="div2">
+               
+               <h3><a name="d4e193" id="d4e193"></a>3.1 The <code>dt-conv:byte-to-base64Binary</code> function
+               </h3>
+               <p>This function converts from xs:byte to xs:base64Binary.</p>
+               <div class="exampleInner"><pre>
+<code class="function">dt-conv:byte-to-base64Binary</code>($data as <code class="type">xs:byte*</code>) as <code class="type">xs:base64Binary?</code>
+</pre></div>
+               <ul>
+                  <li>
+                     <p><code>$data</code> is the data to be converted.
+                     </p>
+                  </li>
+               </ul>
+            </div>
+            <div class="div2">
+               
+               <h3><a name="d4e218" id="d4e218"></a>3.2 The <code>dt-conv:byte-to-hexBinary</code> function
+               </h3>
+               <p>This function converts from xs:byte to xs:hexBinary.</p>
+               <div class="exampleInner"><pre>
+<code class="function">dt-conv:byte-to-hexBinary</code>($data as <code class="type">xs:byte*</code>) as <code class="type">xs:hexBinary?</code>
+</pre></div>
+               <ul>
+                  <li>
+                     <p><code>$data</code> is the data to be converted.
+                     </p>
+                  </li>
+               </ul>
+            </div>
+         </div>
+         <div class="div1">
+            
+            <h2><a name="d4e243" id="d4e243"></a>4 <code>xs:hexBinary</code> to other datatypes
+            </h2>
+            <p>These functions provide conversion from xs:hexBinary datatype to other datatypes.</p>
+            <div class="div2">
+               
+               <h3><a name="d4e250" id="d4e250"></a>4.1 The <code>dt-conv:hexBinary-to-byte</code> function
+               </h3>
+               <p>This function converts from xs:hexBinary to xs:byte.</p>
+               <div class="exampleInner"><pre>
+<code class="function">dt-conv:hexBinary-to-byte</code>($data as <code class="type">xs:hexBinary?</code>) as <code class="type">xs:byte*</code>
+</pre></div>
+               <ul>
+                  <li>
+                     <p><code>$data</code> is the data to be converted.
+                     </p>
+                  </li>
+               </ul>
+            </div>
+            <div class="div2">
+               
+               <h3><a name="d4e275" id="d4e275"></a>4.2 The <code>dt-conv:hexBinary-to-string</code> function
+               </h3>
+               <p>This function converts from xs:hexBinary to xs:string.</p>
+               <div class="exampleInner"><pre>
+<code class="function">dt-conv:hexBinary-to-string</code>($data as <code class="type">xs:hexBinary?</code>) as <code class="type">xs:string?</code>
+</pre></div>
+               <div class="exampleInner"><pre>
+<code class="function">dt-conv:hexBinary-to-string</code>($data as <code class="type">xs:hexBinary?</code>,
+		$encoding as xs:string) as <code class="type">xs:string?</code>
+</pre></div>
+               <ul>
+                  <li>
+                     <p><code>$data</code> is the data to be converted.
+                     </p>
+                  </li>
+                  <li>
+                     <p><code>$encoding</code> is the encoding used for conversion. The default value is UTF-8. If it is specified
+                        an unsupported encoding, this
+                        is an error <a href="#errDTCONV01">[err:DTCONV01]</a>.
+                     </p>
+                  </li>
+               </ul>
+            </div>
+         </div>
+         <div class="div1">
+            
+            <h2><a name="d4e318" id="d4e318"></a>5 <code>xs:string</code> to other datatypes
+            </h2>
+            <p>These functions provide conversion from xs:string datatype to other datatypes.</p>
+            <div class="div2">
+               
+               <h3><a name="d4e325" id="d4e325"></a>5.1 The <code>dt-conv:string-to-base64Binary</code> function
+               </h3>
+               <p>This function converts from xs:string to xs:base64Binary.</p>
+               <div class="exampleInner"><pre>
+<code class="function">dt-conv:string-to-base64Binary</code>($data as <code class="type">xs:string?</code>) as <code class="type">xs:base64Binary?</code>
+</pre></div>
+               <div class="exampleInner"><pre>
+<code class="function">dt-conv:string-to-base64Binary</code>($data as <code class="type">xs:string?</code>,
+		$encoding as xs:string) as <code class="type">xs:base64Binary?</code>
+</pre></div>
+               <ul>
+                  <li>
+                     <p><code>$data</code> is the data to be converted.
+                     </p>
+                  </li>
+                  <li>
+                     <p><code>$encoding</code> is the encoding used for conversion. The default value is UTF-8. If it is specified
+                        an unsupported encoding, this
+                        is an error <a href="#errDTCONV01">[err:DTCONV01]</a>.
+                     </p>
+                  </li>
+               </ul>
+            </div>
+            <div class="div2">
+               
+               <h3><a name="d4e368" id="d4e368"></a>5.2 The <code>dt-conv:string-to-hexBinary</code> function
+               </h3>
+               <p>This function converts from xs:string to xs:hexBinary.</p>
+               <div class="exampleInner"><pre>
+<code class="function">dt-conv:string-to-hexBinary</code>($data as <code class="type">xs:string?</code>) as <code class="type">xs:hexBinary?</code>
+</pre></div>
+               <div class="exampleInner"><pre>
+<code class="function">dt-conv:string-to-hexBinary</code>($data as <code class="type">xs:string?</code>,
+		$encoding as xs:string) as <code class="type">xs:hexBinary?</code>
+</pre></div>
+               <ul>
+                  <li>
+                     <p><code>$data</code> is the data to be converted.
+                     </p>
+                  </li>
+                  <li>
+                     <p><code>$encoding</code> is the encoding used for conversion. The default value is UTF-8. If it is specified
+                        an unsupported encoding, this
+                        is an error <a href="#errDTCONV01">[err:DTCONV01]</a>.
+                     </p>
+                  </li>
+               </ul>
+            </div>
+            <div class="div2">
+               
+               <h3><a name="d4e411" id="d4e411"></a>5.3 The <code>dt-conv:string-to-integer</code> function
+               </h3>
+               <p>This function converts from xs:string to xs:integer.</p>
+               <div class="exampleInner"><pre>
+<code class="function">dt-conv:string-to-integer</code>($data as <code class="type">xs:string?</code>,
+		$radix as <code class="type">xs:integer</code>) as <code class="type">xs:integer?</code>
+</pre></div>
+               <ul>
+                  <li>
+                     <p><code>$data</code> is the data to be converted.
+                     </p>
+                  </li>
+                  <li>
+                     <p><code>$radix</code> is the radix used to provide the conversion of $data ($data is considered being in
+                        radix $radix).
+                     </p>
+                  </li>
+               </ul>
+            </div>
+         </div>
+         <div class="div1">
+            
+            <h2><a name="d4e444" id="d4e444"></a>6 <code>xs:integer</code> to other datatypes
+            </h2>
+            <p>These functions provide conversion from xs:integer datatype to other datatypes.</p>
+            <div class="div2">
+               
+               <h3><a name="d4e451" id="d4e451"></a>6.1 The <code>dt-conv:integer-to-string</code> function
+               </h3>
+               <p>This function converts from xs:integer to xs:string.</p>
+               <div class="exampleInner"><pre>
+<code class="function">dt-conv:integer-to-string</code>($data as <code class="type">xs:integer?</code>,
+		$radix as <code class="type">xs:integer</code>) as <code class="type">xs:string?</code>
+</pre></div>
+               <ul>
+                  <li>
+                     <p><code>$data</code> is the data to be converted.
+                     </p>
+                  </li>
+                  <li>
+                     <p><code>$radix</code> is the radix used to provide the conversion of $data.
+                     </p>
+                  </li>
+               </ul>
+            </div>
+         </div>
+      </div>
+      <div class="back">
+         <div class="div1">
+            
+            <h2><a name="d4e485" id="d4e485"></a>A References
+            </h2>
+            <dl>
+               <dt class="label"><a name="xpath-30" id="xpath-30"></a>XPath 3.0
+               </dt>
+               <dd>
+                  	               <a href="http://w3.org/TR/xpath-30/">XML Path Language (XPath) 3.0</a>.
+                  	               Jonathan Robie, Don Chamberlin, Michael Dyck, John Snelson, editors.
+                  W3C Working Draft, 13 December 2011.
+               </dd>
+               <dt class="label"><a name="xslt-30" id="xslt-30"></a>XSLT 3.0
+               </dt>
+               <dd>                        
+                  	               <a href="http://w3.org/TR/xslt-30/">XSL Transformations (XSLT) Version 3.0</a>.
+                  	               Michael Kay, editor. W3C Working Draft, 10 July 2012.
+               </dd>
+               <dt class="label"><a name="xquery-30" id="xquery-30"></a>XQuery 3.0
+               </dt>
+               <dd>                        
+                  	               <a href="http://w3.org/TR/xquery-30/">XQuery 3.0: An XML Query Language</a>.
+                  	               Jonathan Robie, Don Chamberlin, Michael Dyck, John Snelson, editors.
+                  W3C Working Draft, 13 December 2011.
+               </dd>
+               <dt class="label"><a name="xpath-functions-30" id="xpath-functions-30"></a>XPath and XQuery Functions and Operators 3.0
+               </dt>
+               <dd>
+                  <a href="http://w3.org/TR/xpath-functions-30/">XPath and XQuery Functions and Operators 3.0</a>.
+                  Michael Kay, editor. W3C Working Draft, 13 December 2011.
+               </dd>
+               <dt class="label"><a name="xpath-datamodel-30" id="xpath-datamodel-30"></a>XQuery and XPath Data Model 3.0
+               </dt>
+               <dd>
+                  <a href="http://w3.org/TR/xpath-datamodel-30/">XQuery and XPath Data Model 3.0</a>.
+                  Norman Walsh, Anders Berglund, John Snelson, editors. W3C Working Draft, 13 December
+                  2011.
+               </dd>
+               <dt class="label"><a name="xmlschema11-1" id="xmlschema11-1"></a>W3C XML Schema Definition Language (XSD) 1.1 Part 1: Structures
+               </dt>
+               <dd>
+                  <a href="http://w3.org/TR/xmlschema11-1/">W3C XML Schema Definition Language (XSD) 1.1 Part 1: Structures</a>.
+                  Henry S. Thompson, Noah Mendelsohn, David Beech, Murray Maloney, editors. W3C Recommendation,
+                  5 April 2012.
+               </dd>
+               <dt class="label"><a name="xmlschema11-2" id="xmlschema11-2"></a>W3C XML Schema Definition Language (XSD) 1.1 Part 2: Datatypes
+               </dt>
+               <dd>
+                  <a href="http://w3.org/TR/xmlschema11-2/">W3C XML Schema Definition Language (XSD) 1.1 Part 2: Datatypes</a>.
+                  David Peterson, Shudi (Sandy) Gao 高殊镝, Ashok Malhotra, C. M. Sperberg-McQueen, Henry
+                  S. Thompson, editors. W3C Recommendation, 5 April 2012.
+               </dd>
+               <dt class="label"><a name="rfc2045" id="rfc2045"></a>RFC 2045 - Multipurpose Internet Mail Extensions (MIME) Part One: Format of Internet
+                  Message Bodies
+               </dt>
+               <dd>
+                  <a href="http://ietf.org/rfc/rfc2045/">Multipurpose Internet Mail Extensions (MIME) Part One: Format of Internet Message
+                     Bodies</a>.
+                  N. Freed, N. Borenstein, editors. Network Working Group, November 1996.
+               </dd>
+            </dl>
+         </div>
+         <div class="div1">
+            
+            <h2><a name="d4e529" id="d4e529"></a>B Summary of Error Conditions
+            </h2>
+            <dl>
+               <dt class="label"><a name="errDTCONV01" id="errDTCONV01"></a>err:DTCONV01
+               </dt>
+               <dd>The encoding is not supported.</dd>
+            </dl>
+         </div>
+      </div>
+   </body>
+</html>

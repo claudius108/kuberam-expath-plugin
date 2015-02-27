@@ -1,0 +1,116 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>ro.kuberam.maven.plugins</groupId>
+		<artifactId>base</artifactId>
+		<version>0.2.1</version>
+		<relativePath></relativePath>
+	</parent>
+
+	<artifactId>kuberam-expath-plugin</artifactId>
+	<version>0.4.2</version>
+	<packaging>maven-plugin</packaging>
+	<name>kuberam expath plugin</name>
+	<description>Plugin for EXPath related functionality</description>
+	<url>http://kuberam.ro/maven/plugins/kuberam-expath-plugin</url>
+	<inceptionYear>2013</inceptionYear>
+	<licenses>
+		<license>
+			<name>GNU Lesser General Public License</name>
+			<url>http://gnu.org/copyleft/lesser.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<organization>
+		<name>Teodorescu Claudius Marian PFA</name>
+		<url>http://kuberam.ro</url>
+	</organization>
+
+	<developers>
+		<developer>
+			<id>claudius</id>
+			<name>Claudius Teodorescu</name>
+			<email>claudius.teodorescu@gmail.com</email>
+		</developer>
+	</developers>
+
+	<scm>
+		<connection>scm:git:ssh@github.com:claudius108/kuberam.git</connection>
+		<developerConnection>scm:git:ssh@github.com:claudius108/kuberam.git</developerConnection>
+		<url>https://github.com/claudius108/kuberam/tree/master/kuberam-maven-plugins/kuberam-expath-plugin</url>
+	</scm>
+
+	<prerequisites>
+		<maven>${mavenVersion}</maven>
+	</prerequisites>
+
+	<dependencies>
+		<!-- <dependency> -->
+		<!-- <groupId>org.apache.maven.shared</groupId> -->
+		<!-- <artifactId>file-management</artifactId> -->
+		<!-- <version>1.2.1</version> -->
+		<!-- </dependency> -->
+		<dependency>
+			<groupId>org.codehaus.plexus</groupId>
+			<artifactId>plexus-archiver</artifactId>
+			<version>2.4.1</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.codehaus.plexus</groupId>
+					<artifactId>plexus-component-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.saxon</groupId>
+			<artifactId>Saxon-HE</artifactId>
+			<version>9.5.1-3</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>1.8.4</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- <dependency> -->
+		<!-- <groupId>org.apache.maven</groupId> -->
+		<!-- <artifactId>maven-ant-tasks</artifactId> -->
+		<!-- <version>2.1.3</version> -->
+		<!-- </dependency> -->
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+			</plugin>
+			<!-- <plugin> -->
+			<!-- <groupId>org.apache.maven.plugins</groupId> -->
+			<!-- <artifactId>maven-plugin-plugin</artifactId> -->
+			<!-- </plugin> -->
+			<!-- <plugin> -->
+			<!-- <artifactId>maven-site-plugin</artifactId> -->
+			<!-- </plugin> -->
+		</plugins>
+	</build>
+
+</project>

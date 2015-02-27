@@ -1,0 +1,56 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>ro.kuberam.maven.plugins.kuberam-expath-plugin</groupId>
+	<artifactId>make-xar-test</artifactId>
+	<version>0.2.6</version>
+	<packaging>jar</packaging>
+	<name>Test MakeXarMojo</name>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<module-prefix>crypto</module-prefix>
+		<module-namespace>http://expath.org/ns/crypto</module-namespace>
+		<spec-title>EXPath Cryptographic Module</spec-title>
+		<package-name>http://exist-db.org/ns/expath-${module-prefix}</package-name>
+		<package-abbrev>expath-${module-prefix}-exist-lib-demos</package-abbrev>
+		<package-title>${spec-title} Demos</package-title>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>ro.kuberam.maven.plugins</groupId>
+				<artifactId>kuberam-expath-plugin</artifactId>
+				<version>0.3</version>
+				<executions>
+					<execution>
+						<id>create-application-archive</id>
+						<phase>test</phase>
+						<goals>
+							<goal>make-xar</goal>
+						</goals>
+						<configuration>
+							<descriptor>application-assembly.xml</descriptor>
+							<finalName>${project.build.finalName}-application</finalName>
+						</configuration>
+					</execution>
+					<execution>
+						<id>create-library-archive</id>
+						<phase>test</phase>
+						<goals>
+							<goal>make-xar</goal>
+						</goals>
+						<configuration>
+							<descriptor>library-assembly.xml</descriptor>
+							<finalName>${project.build.finalName}-library</finalName>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	
+</project>

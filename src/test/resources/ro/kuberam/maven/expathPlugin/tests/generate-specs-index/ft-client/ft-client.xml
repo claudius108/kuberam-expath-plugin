@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?oxygen RNGSchema="http://expath.org/ns/xmlspec/xmlspec.rnc" type="compact"?>
+<spec xmlns:spec="http://expath.org/ns/xmlspec" role="editors-copy">
+    <header>
+        <title>File Transfer Client Module</title>
+        <version>1.0</version>
+        <w3c-designation>w3c-designation</w3c-designation>
+        <w3c-doctype>EXPath Candidate Module</w3c-doctype>
+        <pubdate>
+            <day>28</day>
+            <month>September</month>
+            <year>2011</year>
+        </pubdate>
+        <publoc>
+            <loc href="http://expath.org/spec/ft-client/20110928"/>
+        </publoc>
+        <altlocs>
+            <loc href="http://expath.org/spec/ft-client/20110928.xml">XML</loc>
+        </altlocs>
+        <latestloc>
+            <loc href="http://expath.org/spec/ft-client"/>
+        </latestloc>
+        <authlist>
+            <author role="editor">
+                <name>Claudius Teodorescu</name>
+                <affiliation>XML Consultant</affiliation>
+            </author>
+        </authlist>
+	<copyright>
+		<p>
+			Copyright © 2011-2013 Claudius Teodorescu, published by the
+			<loc href="http://w3.org/community/expath/">EXPath Community Group</loc>
+			under the
+			<loc href="https://www.w3.org/community/about/agreements/cla/">W3C Community Contributor
+				License Agreement (CLA)</loc>
+			. A human-readable
+			<loc href="http://www.w3.org/community/about/agreements/cla-deed/">summary</loc>
+			is
+			available.
+		</p>
+		<p>
+			This specification was published by the
+			<loc href="http://www.w3.org/community/expath/">EXPath Community Group</loc>
+			. It is not a W3C Standard nor is it on the W3C
+			Standards Track. Please note that under the
+			<loc href="http://www.w3.org/community/about/agreements/cla/">W3C Community Contributor
+				License Agreement (CLA)</loc>
+			there is a limited opt-out and other conditions apply.
+			Learn more about
+			<loc href="http://www.w3.org/community/">W3C Community and Business
+				Groups</loc>
+			.
+		</p>
+	</copyright>
+        <abstract>
+            <p>This proposal provides a File Transfer Client interface for XPath 3.0. It defines functions covering the operations needed to
+            manage (remote) resources (files and directories). It has been designed to be compatible with XQuery 3.0 and XSLT 3.0, as well as any other standard based on XPath 3.0.</p>
+        </abstract>
+        <status>
+            <p>Must be ignored, but is required by the schema...</p>
+        </status>
+        <langusage>
+            <language>langusage</language>
+        </langusage>
+        <revisiondesc>
+            <p>revisiondesc</p>
+        </revisiondesc>
+    </header>
+    <body>
+        <div1>
+            <head>Introduction</head>
+		    <p>This File Transfer Client interface allows using of various file transfer protocols, including well-known ones, such as FTP, SFTP (SSH File Transfer Protocol),
+		    FTPS (FTP over implicit SSL/TLS), FTPES (FTP over explicit SSL/TLS), WebDAV (Web-based Distributed Authoring and Versioning), and WebDAVS (WebDAV encrypted via SSL),
+		    as well as custom defined protocols.</p>
+		    <p>The specification was made so that to cover the operations involved as to managing (remote) resources (files and directories).</p>
+		    <p>A custom protocol can make use of any number of the operations over files described below, in this manner assuring a very elastic approach of the (remote) resources
+		    (files and directories) management.</p>
+            <div2>
+                <head>Namespace conventions</head>
+                <p>The module defined by this document defines functions and elements in the namespace
+                  <code>http://expath.org/ns/ft-client</code>. In this document, the
+		  <code>ft-client</code> prefix, when used, is bound to this namespace URI.</p>
+                <p>Error codes are defined in the namespace <code>http://expath.org/ns/error</code>. In
+               this document, the <code>err</code> prefix, when used, is bound to this namespace
+               URI.</p>
+            </div2>
+            <div2>
+                <head>Error management</head>
+                <p>Error conditions are identified by a code (a <code>QName</code>). When such an error
+               condition is reached during the execution of the function, a dynamic error is thrown,
+               with the corresponding error code (as if the standard XPath function
+                  <code>error</code> had been called).</p>
+            </div2>
+        </div1>
+        <div1>
+            <head>The <code>ft-client:connect</code> function</head>
+	    <p>This function is used to open a connection. It returns an xs:long representing the connection handle.</p>
+        <p>All data connections should originate from an authorized party (host and port). In case when a data connection originated from an unauthorized party, this is
+			an error <bibref ref="errFTC001"/>.</p>
+            <p>In case when a server closes a connection, an error <bibref ref="errFTC002"/> will be raised.</p>
+	    <p>In case when credentials used (username, password, or private key) are wrong, an error <bibref ref="errFTC005"/> will be raised.</p>
+	    <p>In case when the protocol used is not supported, an error <bibref ref="errFTC006"/> will be raised.</p>
+            <eg>
+<spec:function>ft-client:connect</spec:function>($remote-host-uri as <spec:type>xs:anyURI</spec:type>) as <spec:type>xs:long</spec:type>
+            </eg>
+            <eg>
+<spec:function>ft-client:connect</spec:function>($remote-host-uri as <spec:type>xs:anyURI</spec:type>,
+		$options as <spec:type>xs:anyAtomicType</spec:type>) as <spec:type>xs:long</spec:type>
+            </eg>
+            <ulist>
+                <item>
+                    <p>
+			    <code>$remote-host-uri</code> is the URI of the host to connect to. See <bibref ref="rfc2396"/> in order to provide a correct syntax for this parameter.</p>
+                </item>
+                <item>
+                    <p>
+			    <code>$options</code> represents the options needed for the current operation.</p>
+                </item>
+            </ulist>
+        </div1>
+        <div1>
+		<head>The <code>ft-client:list-resources</code> function</head>
+	    <p>This function gets the list of resources (files and directories) inside the directory indicated by $remote-directory-path.</p>
+            <eg>
+<spec:function>ft-client:list-resources</spec:function>($connection-handle as <spec:type>xs:long</spec:type>,
+	$remote-directory-path as <spec:type>xs:string</spec:type>) as <spec:type>element(ft-client:resources-list)</spec:type>
+            </eg>
+            <ulist>
+                <item>
+                    <p>
+                        <code>$connection-handle</code> is the connection handle.</p>
+                </item>
+                <item>
+			<p><code>$remote-directory-path</code> is the directory path (this path has to be an absolute path). If the path is not correct,
+				this is an error <bibref ref="errFTC003"/>. If the user has no rights
+			to access the path, this is an error <bibref ref="errFTC004"/>.</p>
+                </item>
+            </ulist>
+	    <div2>
+		    <head>The <code>ft-client:resource-list</code> element</head>
+		    <p>The <code>ft-client:resource-list</code> element represents the data sent back by the host as response to the command of listing a directory:</p>
+            <eg>
+&lt;ft-client:resource-list&gt;
+	(ft-client:resource*)
+&lt;/ft-client:resource-list&gt;
+</eg>
+	    </div2>
+	    <div2>
+		    <head>The <code>ft-client:resource</code> element</head>
+		    <p>The <code>ft-client:resource</code> element contains details about each resource (directory, file, link) one can find within the directory.</p>
+		    <p>The content of the resource is returned as the content of this element.</p>
+            <eg>
+&lt;ft-client:resource
+    name = xs:string
+    type = "directory" | "file" | "link"
+    last-modified = xs:dateTime
+    size = xs:integer
+    human-readable-size = xs:string
+    user = xs:string
+    user-group = xs:string
+    permissions = xs:string
+    link-to = xs:string?&gt;
+    xs:string?
+&lt;/ft-client:resource&gt;
+</eg>
+            <ulist>
+                <item>
+                  <p>
+                    <code>name</code> is the name of the resource.
+                  </p>
+                </item>
+                <item>
+                    <p>
+                        <code>type</code> is the type of the resource.</p>
+                </item>
+                <item>
+                  <p>
+                    <code>last-modified</code> is the date and time of the last modification of the resource.
+                  </p>
+               </item>
+		<item>
+			<p><code>size</code> is the size of the resource, expressed in bytes.</p>
+                </item>
+		<item>
+			<p><code>human-readable-size</code> is the size of the resource, expressed in a human readable format.</p>
+                </item>		
+		<item>
+			<p><code>user</code> is the name of the resource's owner.</p>
+                </item>
+		<item>
+			<p><code>user-group</code> is the name of the group of the resource's owner.</p>
+                </item>
+		<item>
+			<p><code>permissions</code> is the resource's permissions.</p>
+                </item>
+		<item>
+			<p><code>link-to</code> is the resource the current resource points to.</p>
+                </item>		
+            </ulist>
+	    </div2>
+        </div1>
+	<div1>
+		<head>The <code>ft-client:store-resource</code> function</head>
+		<p>This function stores a resource (directory, file). It returns true if successfully completed, false if not.</p>
+		<p>This function is designated to accomplish the following tasks:</p>
+		<olist>
+			<item>
+				<p>
+					store a directory on the host, when <code>$remote-resource-path</code> ends with '/'; 
+					if the directory already exists, it will be overwritten;</p>
+			</item>
+			<item>
+				<p>
+					store a file on the host, when <code>$remote-resource-path</code> does not end with '/';
+					if the file already exists, it is overwritten; the file's contents is
+					passed through the <code>$resource-contents</code> parameter;
+					in case when this parameter is empty or missing, the
+					file will be empty;</p>
+			</item>			
+		</olist>
+		<eg>
+<spec:function>ft-client:store-resource</spec:function>($connection-handle as <spec:type>xs:long</spec:type>,
+	$remote-resource-path as <spec:type>xs:string</spec:type>,
+	$resource-contents as <spec:type>xs:anyAtomicType?</spec:type>) as <spec:type>xs:boolean</spec:type>
+		</eg>
+		<ulist>
+			<item>
+				<p><code>$connection-handle</code> is the connection handle.</p>
+			</item>
+			<item>
+				<p><code>$remote-resource-path</code> is the path for resource to be created (this path has to be an absolute path). If the path is not correct,
+					this is an error <bibref ref="errFTC003"/>. If the user has no rights
+					to access the path, this is an error <bibref ref="errFTC004"/>.</p>
+			</item>
+			<item>
+				<p>
+					<code>$resource-contents</code> is the contents of the resource to be stored (in case of storing a file).</p>
+			</item>
+		</ulist>
+        </div1>
+        <div1>
+		<head>The <code>ft-client:retrieve-resource</code> function</head>
+            <p>This function retrieves a resource from the host. It returns the resource retrieved, as content of the <code>ft-client:resource</code> element.</p>
+            <eg>
+<spec:function>ft-client:retrieve-resource</spec:function>($connection-handle as <spec:type>xs:long</spec:type>,
+	$remote-resource-path as <spec:type>xs:string</spec:type>) as <spec:type>element(ft-client:resource)</spec:type>
+            </eg>
+            <ulist>
+                <item>
+                    <p>
+                        <code>$connection-handle</code> is the connection handle.</p>
+                </item>
+                <item>
+			<p><code>$remote-resource-path</code> is the path for resource to be retrieved (this path has to be an absolute path). If the path is not correct,
+				this is an error <bibref ref="errFTC003"/>. If the user has no rights
+			to access the path, this is an error <bibref ref="errFTC004"/>.</p>
+                </item>
+            </ulist>
+        </div1>
+	<div1>
+		<head>The <code>ft-client:rename-resource</code> function</head>
+		<p>This function renames a resource (directory, file, or link). It returns true if successfully completed, false if not.</p>
+		<eg>
+<spec:function>ft-client:rename-resource</spec:function>($connection-handle as <spec:type>xs:long</spec:type>,
+  $remote-resource-path as <spec:type>xs:string</spec:type>,
+  $new-name as <spec:type>xs:string</spec:type>) as <spec:type>xs:boolean</spec:type>
+            </eg>
+		<ulist>
+			<item>
+				<p>
+					<code>$connection-handle</code> is the connection handle.</p>
+			</item>
+			<item>
+				<p><code>$remote-resource-path</code> is the path for resource to be renamed (this path has to be an absolute path). If the path is not correct,
+					this is an error <bibref ref="errFTC003"/>. If the user has no rights
+					to access the path, this is an error <bibref ref="errFTC004"/>.</p>
+                	</item>
+			<item>
+				<p>
+					<code>$new-name</code> is the new name for the resource.</p>
+			</item>			
+		</ulist>
+        </div1>	
+	<div1>
+		<head>The <code>ft-client:copy-resource</code> function</head>
+		<p>This function renames a resource (directory, file, or link). It returns true if successfully completed, false if not.</p>
+		<eg>
+<spec:function>ft-client:copy-resource</spec:function>($connection-handle as <spec:type>xs:long</spec:type>,
+  $remote-resource-path as <spec:type>xs:string</spec:type>,
+  $new-name as <spec:type>xs:string</spec:type>) as <spec:type>xs:boolean</spec:type>
+		</eg>
+		<ulist>
+			<item>
+				<p>
+					<code>$connection-handle</code> is the connection handle.</p>
+			</item>
+			<item>
+				<p><code>$remote-resource-path</code> is the path for resource to be renamed (this path has to be an absolute path). If the path is not correct,
+					this is an error <bibref ref="errFTC003"/>. If the user has no rights
+					to access the path, this is an error <bibref ref="errFTC004"/>.</p>
+			</item>
+			<item>
+				<p>
+					<code>$new-name</code> is the new name for the resource.</p>
+			</item>			
+		</ulist>
+        </div1>
+	<div1>
+		<head>The <code>ft-client:move-resource</code> function</head>
+		<p>This function renames a resource (directory, file, or link). It returns true if successfully completed, false if not.</p>
+		<eg>
+<spec:function>ft-client:move-resource</spec:function>($connection-handle as <spec:type>xs:long</spec:type>,
+  $remote-resource-path as <spec:type>xs:string</spec:type>,
+  $new-name as <spec:type>xs:string</spec:type>) as <spec:type>xs:boolean</spec:type>
+		</eg>
+		<ulist>
+			<item>
+				<p>
+					<code>$connection-handle</code> is the connection handle.</p>
+			</item>
+			<item>
+				<p><code>$remote-resource-path</code> is the path for resource to be renamed (this path has to be an absolute path). If the path is not correct,
+					this is an error <bibref ref="errFTC003"/>. If the user has no rights
+					to access the path, this is an error <bibref ref="errFTC004"/>.</p>
+			</item>
+			<item>
+				<p>
+					<code>$new-name</code> is the new name for the resource.</p>
+			</item>			
+		</ulist>
+        </div1>	
+	<div1>
+		<head>The <code>ft-client:delete-resource</code> function</head>
+		<p>This function deletes a resource (directory (if empty), file, or link). It returns true if successfully completed, false if not.</p>
+		<eg>
+<spec:function>ft-client:delete-resource</spec:function>($connection-handle as <spec:type>xs:long</spec:type>,
+  $remote-resource-path as <spec:type>xs:string</spec:type>) as <spec:type>xs:boolean</spec:type>
+            </eg>
+		<ulist>
+			<item>
+				<p>
+					<code>$connection-handle</code> is the connection handle.</p>
+			</item>
+			<item>
+				<p><code>$remote-resource-path</code> is the path for resource to be deleted (this path has to be an absolute path). If the path is not correct,
+					this is an error <bibref ref="errFTC003"/>. If the user has no rights
+					to access the path, this is an error <bibref ref="errFTC004"/>.</p>
+                	</item>	
+		</ulist>
+        </div1>
+	<div1>
+		<head>The <code>ft-client:get-resource-metadata</code> function</head>
+		<p>This function is used for getting the metadata of a resource (directory, file, or link). It returns the resource metadata as attributes of the <code>ft-client:resource</code> element.</p>
+		<eg>
+<spec:function>ft-client:get-resource-metadata</spec:function>($connection-handle as <spec:type>xs:long</spec:type>,
+	$remote-resource-path as <spec:type>xs:string</spec:type>) as <spec:type>element(ft-client:resource)</spec:type>
+		</eg>
+		<ulist>
+			<item>
+				<p>
+					<code>$connection-handle</code> is the connection handle.</p>
+			</item>
+			<item>
+				<p><code>$remote-resource-path</code> is the path of the resource (this path has to be an absolute path). If the path is not correct,
+					this is an error <bibref ref="errFTC003"/>. If the user has no rights
+					to access the path, this is an error <bibref ref="errFTC004"/>.</p>
+			</item>		
+		</ulist>
+        </div1>
+	<div1>
+		<head>The <code>ft-client:set-resource-metadata</code> function</head>
+		<p>This function is used for setting the metadata of a resource (directory, file, or link). It returns true if successfully completed, false if not.</p>
+		<eg>
+<spec:function>ft-client:set-resource-metadata</spec:function>($connection-handle as <spec:type>xs:long</spec:type>,
+	$remote-resource-path as <spec:type>xs:string</spec:type>,
+	$new-resource-metadata as <spec:type>element(ft-client:resource)</spec:type>) as <spec:type>xs:boolean</spec:type>
+		</eg>
+		<ulist>
+			<item>
+				<p>
+					<code>$connection-handle</code> is the connection handle.</p>
+			</item>
+			<item>
+				<p><code>$remote-resource-path</code> is the path for resource to set metadata for (this path has to be an absolute path). If the path is not correct,
+					this is an error <bibref ref="errFTC003"/>. If the user has no rights
+					to access the path, this is an error <bibref ref="errFTC004"/>.</p>
+			</item>
+			<item>
+				<p>
+					<code>$new-resource-metadata</code> is the new resource metadata.</p>
+			</item>			
+		</ulist>
+        </div1>	
+	<div1>
+		<head>The <code>ft-client:disconnect</code> function</head>
+		<p>This function closes an opened connection. Returns true or false indicating the success of closing the connection.</p>
+		<eg>
+<spec:function>ft-client:disconnect</spec:function>($connection-handle as <spec:type>xs:long</spec:type>) as <spec:type>xs:boolean</spec:type>
+		</eg>
+		<ulist>
+			<item>
+				<p>
+					<code>$connection-handle</code> is the connection handle.</p>
+			</item>
+		</ulist>
+        </div1>	
+    </body>
+    <back>
+        <div1>
+            <head>References</head>
+            <blist>
+	            <bibl id="xpath-30" key="XPath 3.0">
+	               <loc href="http://w3.org/TR/xpath-30/">XML Path Language (XPath) 3.0</loc>.
+	               Jonathan Robie, Don Chamberlin, Michael Dyck, John Snelson, editors. W3C Working Draft, 13 December 2011.</bibl>
+	            <bibl id="xslt-30" key="XSLT 3.0">                        
+	               <loc href="http://w3.org/TR/xslt-30/">XSL Transformations (XSLT) Version 3.0</loc>.
+	               Michael Kay, editor. W3C Working Draft, 10 July 2012.</bibl>         
+	            <bibl id="xquery-30" key="XQuery 3.0">                        
+	               <loc href="http://w3.org/TR/xquery-30/">XQuery 3.0: An XML Query Language</loc>.
+	               Jonathan Robie, Don Chamberlin, Michael Dyck, John Snelson, editors. W3C Working Draft, 13 December 2011.</bibl>
+	            <bibl id="xpath-functions-30" key="XPath and XQuery Functions and Operators 3.0">
+	               <loc href="http://w3.org/TR/xpath-functions-30/">XPath and XQuery Functions and Operators 3.0</loc>.
+	               Michael Kay, editor. W3C Working Draft, 13 December 2011.</bibl>                                
+	            <bibl id="xpath-datamodel-30" key="XQuery and XPath Data Model 3.0">
+	               <loc href="http://w3.org/TR/xpath-datamodel-30/">XQuery and XPath Data Model 3.0</loc>.
+	               Norman Walsh, Anders Berglund, John Snelson, editors. W3C Working Draft, 13 December 2011.</bibl>	                        
+                <bibl id="rfc959" key="RFC 959">
+                    <loc href="http://ietf.org/rfc/rfc959.txt">RFC 959: FILE TRANSFER PROTOCOL (FTP)</loc>.
+					J. Postel, J. Reynolds editors. Network Working Group. October 1985.</bibl>
+                <bibl id="rfc2577" key="RFC 2577">
+                    <loc href="http://ietf.org/rfc/rfc2577.txt">RFC 2577: FTP Security Considerations</loc>.
+					M. Allman, S. Ostermann editors. Network Working Group. May 1999.</bibl>
+				<bibl id="draft-yevstifeyev-ftp-uri-scheme-08" key="draft-yevstifeyev-ftp-uri-scheme-08">
+					<loc href="http://tools.ietf.org/html/draft-yevstifeyev-ftp-uri-scheme-08">The 'ftp' URI Scheme</loc>.
+					M. Yevstifeyev editor. Internet Engineering Task Force. September 25, 20114.</bibl>	
+                <bibl id="rfc3986" key="RFC 3986">
+                    <loc href="http://tools.ietf.org/html/rfc3986">Uniform Resource Identifiers (URI): Generic Syntax</loc>.
+					T. Berners-Lee, R. Fielding, L. Masinter, editors. Network Working Group. January 2005.</bibl>
+            </blist>
+        </div1>
+        <div1>
+            <head>Summary of Error Conditions</head>
+            <blist>
+                <bibl id="errFTC001" key="err:FTC001">err:FTC001: An unauthorized party initiated a data
+			    connection. The current session will be halted.</bibl>
+                <bibl id="errFTC002" key="err:FTC002">err:FTC002: The connection was closed by server.</bibl>
+		<bibl id="errFTC003" key="err:FTC003">err:FTC003: The resource does not exist.</bibl>
+		<bibl id="errFTC004" key="err:FTC004">err:FTC004: The user has no rights to access the resource.</bibl>
+		<bibl id="errFTC005" key="err:FTC005">err:FTC005: Authentication failed. The username, password, or private key is wrong.</bibl>
+		<bibl id="errFTC006" key="err:FTC006">err:FTC006: The protocol is not supported.</bibl>
+        <bibl id="errFTC007" key="err:FTC007">err:FTC007: The current operation failed.</bibl>
+            </blist>
+        </div1>
+    </back>
+</spec>

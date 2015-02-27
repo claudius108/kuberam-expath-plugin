@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/DECORATION/1.4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/DECORATION/1.4.0 http://maven.apache.org/xsd/decoration-1.4.0.xsd" name="Kuberam EXPath plugin">
+	<googleAnalyticsAccountId>UA-43293529-1</googleAnalyticsAccountId>
+	<skin>
+		<groupId>org.apache.maven.skins</groupId>
+		<artifactId>maven-fluido-skin</artifactId>
+		<version>1.2.1</version>
+	</skin>
+	<custom>
+		<fluidoSkin>
+			<sideBarEnabled>true</sideBarEnabled>
+		</fluidoSkin>
+	</custom>
+	<body>
+		<menu name="Overview">
+			<item name="Introduction" href="/index.html" />
+			<item name="Goals" href="plugin-info.html" />
+			<item name="Usage" href="usage.html" />
+<!-- 			<item name="FAQ" href="faq.html" /> -->
+		</menu>
+		<menu name="Examples">
+			<item name="generate-lib-basics" href="examples/generate-lib-basics.html" />
+			<item name="generate-specs-index" href="examples/generate-specs-index.html" />
+			<item name="make-xar" href="examples/make-xar.html" />
+			<item name="transform-spec-to-html-format" href="examples/transform-spec-to-html-format.html" />
+		</menu>
+		<menu ref="reports" />
+		<menu ref="modules" />
+	</body>
+</project>

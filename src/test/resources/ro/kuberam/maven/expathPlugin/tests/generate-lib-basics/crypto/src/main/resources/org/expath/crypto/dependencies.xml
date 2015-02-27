@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<dependencies xmlns="http://maven.apache.org/POM/4.0.0">
+	<dependency>
+		<groupId>org.kohsuke</groupId>
+		<artifactId>geoip</artifactId>
+		<version>1.2.5</version>
+	</dependency>
+</dependencies>

@@ -1,0 +1,61 @@
+  ---
+  Introduction
+  ---
+  Claudius Teodorescu
+  ---
+  2013-08-19
+  ---
+
+Kuberam EXPath Plugin
+
+* Introduction
+
+  The EXPath Plugin for Maven is intended to allow users to develop code based on
+  EXPath specifications (specification driven development), and to assemble EXPath packages
+  (xar-s).
+ 
+  
+* What is an EXPath Specification?
+
+  An EXPath specification contains a library of functions designed to extend the XPath core functions,
+  see {{{http://expath.org/}EXPath Project}}.
+
+
+* What is an EXPath Package?
+
+  An EXPath package is a group of files and directories that are assembled according to the
+  {{{http://expath.org/spec/pkg}EXPath Packaging System Specification}}.
+
+
+* Goals
+
+  For more information about the goals that are available in the EXPath Plugin,
+  see {{{./plugin-info.html}the plugin documentation page}}.
+
+
+* Usage
+
+  General instructions on how to use the EXPath Plugin can be found on the {{{./usage.html}usage page}}. Some more
+  specific use cases are described in the examples given below. Last but not least, users occasionally contribute
+  additional examples, tips or errata to the
+  {{{http://docs.codehaus.org/display/MAVENUSER/EXPath+Plugin}plugin's wiki page}}.
+
+  In case you still have questions regarding the plugin's usage, please have a look at the {{{./faq.html}FAQ}} and feel
+  free to contact the {{{./mail-lists.html}user mailing list}}. The posts to the mailing list are archived and could
+  already contain the answer to your question as part of an older thread. Hence, it is also worth browsing/searching
+  the {{{./mail-lists.html}mail archive}}.
+
+  If you feel like the plugin is missing a feature or has a defect, you can fill a feature request or bug report in our
+  {{{./issue-tracking.html}issue tracker}}. When creating a new issue, please provide a comprehensive description of your
+  concern. Especially for fixing bugs it is crucial that the developers can reproduce your problem. For this reason,
+  entire debug logs, POMs or most preferably little demo projects attached to the issue are very much appreciated.
+  Of course, patches are welcome, too. Contributors can check out the project from our
+  {{{./source-repository.html}source repository}} and will find supplementary information in the
+  {{{http://maven.apache.org/guides/development/guide-helping.html}guide to helping with Maven}}.
+
+
+* Examples
+
+  To provide you with better understanding on some usages of the EXPath
+  Plugin, you can take a look into the examples which can be found
+  {{{./examples/index.html}here}}.

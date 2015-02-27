@@ -1,0 +1,25 @@
+ ------
+ Usage
+ ------
+Claudius Teodorescu
+ ------
+ 2013-08-23
+ ------
+
+Usage
+
+  In order to use this plugin, as for now it is not registered with Maven Central Repository, one
+  has to add the following declaration of plugin's repository:
+  
++---+
+<pluginRepositories>
+	<pluginRepository>
+		<id>kuberam-maven-repo</id>
+		<url>http://kuberam.ro/repos/maven</url>
+		<releases>
+			<updatePolicy>always</updatePolicy>
+		</releases>
+	</pluginRepository>
+</pluginRepositories>
++---+
+  []

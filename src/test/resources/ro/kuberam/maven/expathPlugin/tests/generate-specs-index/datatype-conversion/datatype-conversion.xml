@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?oxygen RNGSchema="http://expath.org/ns/xmlspec/xmlspec.rnc" type="compact"?>
+
+<spec xmlns:spec="http://expath.org/ns/xmlspec" role="editors-copy">
+   <header>
+      <title>DataType Conversion Module</title>
+      <version>1.0</version>
+      <w3c-designation>w3c-designation</w3c-designation>
+      <w3c-doctype>EXPath Candidate Module</w3c-doctype>
+      <pubdate>
+         <day>08</day>
+         <month>November</month>
+         <year>2012</year>
+      </pubdate>
+      <latestloc>
+         <loc href="http://expath.org/spec/datatype-conversion"/>
+      </latestloc>
+      <authlist>
+         <author role="editor">
+            <name id="cteodorescu">Claudius Teodorescu</name>
+            <affiliation>XML Consultant</affiliation>
+         </author>
+      </authlist>
+	<copyright>
+		<p>
+			Copyright © 2012-2013 Claudius Teodorescu, published by the
+			<loc href="http://w3.org/community/expath/">EXPath Community Group</loc>
+			under the
+			<loc href="https://www.w3.org/community/about/agreements/cla/">W3C Community Contributor
+				License Agreement (CLA)</loc>
+			. A human-readable
+			<loc href="http://www.w3.org/community/about/agreements/cla-deed/">summary</loc>
+			is
+			available.
+		</p>
+		<p>
+			This specification was published by the
+			<loc href="http://www.w3.org/community/expath/">EXPath Community Group</loc>
+			. It is not a W3C Standard nor is it on the W3C
+			Standards Track. Please note that under the
+			<loc href="http://www.w3.org/community/about/agreements/cla/">W3C Community Contributor
+				License Agreement (CLA)</loc>
+			there is a limited opt-out and other conditions apply.
+			Learn more about
+			<loc href="http://www.w3.org/community/">W3C Community and Business
+				Groups</loc>
+			.
+		</p>
+	</copyright>
+      <abstract>
+         <p>This proposal defines a <phrase id="module-description">module for providing conversions between various XPath Data Model datatypes</phrase>.
+          It has been designed to be compatible with XQuery 3.0 and XSLT 3.0, as well as any other standard based on XPath 3.0.</p>
+          <p>As this is a work in progress, more details about it can be found at
+          <a href="https://docs.google.com/document/d/1aLoJHvzG9zFaTNM110xMjg-qMHT7vYtWpcBmYoawSJE/pub">Datatype Conversion Functions Comparison</a>.</p>
+      </abstract>
+      <status>
+         <p>Must be ignored, but is required by the schema...</p>
+      </status>
+      <langusage>
+         <language>langusage</language>
+      </langusage>
+      <revisiondesc>
+         <p>revisiondesc</p>
+      </revisiondesc>
+   </header>
+   <body>
+      <div1>
+         <head>Introduction</head>
+         <p>This module is designed to help datatypes handling, providing conversions between datatypes that are not covered by casts mentioned in
+         <bibref ref="xpath-functions-30"/>.</p>
+         <div2>
+            <head>Namespace conventions</head>
+            <p>The module defined by this document defines functions and elements in the namespace
+                  <code id="module-namespace">http://expath.org/ns/datatype-conversion</code>. In this document, the
+                  <code id="module-prefix">dt-conv</code> prefix, when used, is bound to this namespace URI.</p>
+            <p>Error codes are defined in the namespace <code>http://expath.org/ns/error</code>. In
+               this document, the <code>err</code> prefix, when used, is bound to this namespace
+               URI.</p>
+         </div2>
+         <div2>
+            <head>Error management</head>
+            <p>Error conditions are identified by a code (a <code>QName</code>). When such an error
+               condition is reached during the execution of the function, a dynamic error is thrown,
+               with the corresponding error code (as if the standard XPath function
+                  <code>error</code> had been called).</p>
+         </div2>
+      </div1>
+      <div1>
+         <head><code>xs:base64Binary</code> to other datatypes</head>
+         <p>These functions provide conversion from xs:base64Binary datatype to other datatypes.</p>
+         <div2>
+            <head>The <code>dt-conv:base64Binary-to-byte</code> function</head>
+            <p>This function converts from xs:base64Binary to xs:byte.</p>
+            <eg>
+<spec:function>dt-conv:base64Binary-to-byte</spec:function>($data as <spec:type>xs:base64Binary?</spec:type>) as <spec:type>xs:byte*</spec:type>
+</eg>
+            <ulist>
+               <item>
+                  <p><code>$data</code> is the data to be converted.</p>
+               </item>
+            </ulist>            
+         </div2>          
+         <div2>
+            <head>The <code>dt-conv:base64Binary-to-string</code> function</head>
+            <p>This function converts from xs:base64Binary to xs:string.</p>
+            <eg>
+<spec:function>dt-conv:base64Binary-to-string</spec:function>($data as <spec:type>xs:base64Binary?</spec:type>) as <spec:type>xs:string?</spec:type>
+</eg>
+            <eg>
+<spec:function>dt-conv:base64Binary-to-string</spec:function>($data as <spec:type>xs:base64Binary?</spec:type>,
+		$encoding as xs:string) as <spec:type>xs:string?</spec:type>
+</eg>
+            <ulist>
+               <item>
+                  <p><code>$data</code> is the data to be converted.</p>
+               </item>
+               <item>
+                  <p><code>$encoding</code> is the encoding used for conversion. The default value is UTF-8. If it is specified an unsupported encoding, this
+                  is an error <bibref ref="errDTCONV01"/>.</p>
+               </item>
+            </ulist>            
+         </div2> 
+      </div1>
+      <div1>
+         <head><code>xs:byte</code> to other datatypes</head>
+         <p>These functions provide conversion from xs:byte datatype to other datatypes.</p>
+         <div2>
+            <head>The <code>dt-conv:byte-to-base64Binary</code> function</head>
+            <p>This function converts from xs:byte to xs:base64Binary.</p>
+            <eg>
+<spec:function>dt-conv:byte-to-base64Binary</spec:function>($data as <spec:type>xs:byte*</spec:type>) as <spec:type>xs:base64Binary?</spec:type>
+</eg>
+            <ulist>
+               <item>
+                  <p><code>$data</code> is the data to be converted.</p>
+               </item>
+            </ulist>            
+         </div2>  
+         <div2>
+            <head>The <code>dt-conv:byte-to-hexBinary</code> function</head>
+            <p>This function converts from xs:byte to xs:hexBinary.</p>
+            <eg>
+<spec:function>dt-conv:byte-to-hexBinary</spec:function>($data as <spec:type>xs:byte*</spec:type>) as <spec:type>xs:hexBinary?</spec:type>
+</eg>
+            <ulist>
+               <item>
+                  <p><code>$data</code> is the data to be converted.</p>
+               </item>
+            </ulist>            
+         </div2>                    
+      </div1>   
+      <div1>
+         <head><code>xs:hexBinary</code> to other datatypes</head>
+         <p>These functions provide conversion from xs:hexBinary datatype to other datatypes.</p>
+         <div2>
+            <head>The <code>dt-conv:hexBinary-to-byte</code> function</head>
+            <p>This function converts from xs:hexBinary to xs:byte.</p>
+            <eg>
+<spec:function>dt-conv:hexBinary-to-byte</spec:function>($data as <spec:type>xs:hexBinary?</spec:type>) as <spec:type>xs:byte*</spec:type>
+</eg>
+            <ulist>
+               <item>
+                  <p><code>$data</code> is the data to be converted.</p>
+               </item>
+            </ulist>            
+         </div2>          
+         <div2>
+            <head>The <code>dt-conv:hexBinary-to-string</code> function</head>
+            <p>This function converts from xs:hexBinary to xs:string.</p>
+            <eg>
+<spec:function>dt-conv:hexBinary-to-string</spec:function>($data as <spec:type>xs:hexBinary?</spec:type>) as <spec:type>xs:string?</spec:type>
+</eg>
+            <eg>
+<spec:function>dt-conv:hexBinary-to-string</spec:function>($data as <spec:type>xs:hexBinary?</spec:type>,
+		$encoding as xs:string) as <spec:type>xs:string?</spec:type>
+</eg>
+            <ulist>
+               <item>
+                  <p><code>$data</code> is the data to be converted.</p>
+               </item>
+               <item>
+                  <p><code>$encoding</code> is the encoding used for conversion. The default value is UTF-8. If it is specified an unsupported encoding, this
+                  is an error <bibref ref="errDTCONV01"/>.</p>
+               </item>
+            </ulist>            
+         </div2> 
+      </div1> 
+      <div1>
+         <head><code>xs:string</code> to other datatypes</head>
+         <p>These functions provide conversion from xs:string datatype to other datatypes.</p>
+         <div2>
+            <head>The <code>dt-conv:string-to-base64Binary</code> function</head>
+            <p>This function converts from xs:string to xs:base64Binary.</p>
+            <eg>
+<spec:function>dt-conv:string-to-base64Binary</spec:function>($data as <spec:type>xs:string?</spec:type>) as <spec:type>xs:base64Binary?</spec:type>
+</eg>
+            <eg>
+<spec:function>dt-conv:string-to-base64Binary</spec:function>($data as <spec:type>xs:string?</spec:type>,
+		$encoding as xs:string) as <spec:type>xs:base64Binary?</spec:type>
+</eg>
+            <ulist>
+               <item>
+                  <p><code>$data</code> is the data to be converted.</p>
+               </item>
+               <item>
+                  <p><code>$encoding</code> is the encoding used for conversion. The default value is UTF-8. If it is specified an unsupported encoding, this
+                  is an error <bibref ref="errDTCONV01"/>.</p>
+               </item>
+            </ulist>            
+         </div2> 
+         <div2>
+            <head>The <code>dt-conv:string-to-hexBinary</code> function</head>
+            <p>This function converts from xs:string to xs:hexBinary.</p>
+            <eg>
+<spec:function>dt-conv:string-to-hexBinary</spec:function>($data as <spec:type>xs:string?</spec:type>) as <spec:type>xs:hexBinary?</spec:type>
+</eg>
+            <eg>
+<spec:function>dt-conv:string-to-hexBinary</spec:function>($data as <spec:type>xs:string?</spec:type>,
+		$encoding as xs:string) as <spec:type>xs:hexBinary?</spec:type>
+</eg>
+            <ulist>
+               <item>
+                  <p><code>$data</code> is the data to be converted.</p>
+               </item>
+               <item>
+                  <p><code>$encoding</code> is the encoding used for conversion. The default value is UTF-8. If it is specified an unsupported encoding, this
+                  is an error <bibref ref="errDTCONV01"/>.</p>
+               </item>
+            </ulist>            
+         </div2>  
+         <div2>
+            <head>The <code>dt-conv:string-to-integer</code> function</head>
+            <p>This function converts from xs:string to xs:integer.</p>
+            <eg>
+<spec:function>dt-conv:string-to-integer</spec:function>($data as <spec:type>xs:string?</spec:type>,
+		$radix as <spec:type>xs:integer</spec:type>) as <spec:type>xs:integer?</spec:type>
+</eg>
+            <ulist>
+               <item>
+                  <p><code>$data</code> is the data to be converted.</p>
+               </item>
+               <item>
+                  <p><code>$radix</code> is the radix used to provide the conversion of $data ($data is considered being in radix $radix).</p>
+               </item>               
+            </ulist>            
+         </div2>                 
+      </div1>
+      <div1>
+         <head><code>xs:integer</code> to other datatypes</head>
+         <p>These functions provide conversion from xs:integer datatype to other datatypes.</p>
+         <div2>
+            <head>The <code>dt-conv:integer-to-string</code> function</head>
+            <p>This function converts from xs:integer to xs:string.</p>
+            <eg>
+<spec:function>dt-conv:integer-to-string</spec:function>($data as <spec:type>xs:integer?</spec:type>,
+		$radix as <spec:type>xs:integer</spec:type>) as <spec:type>xs:string?</spec:type>
+</eg>
+            <ulist>
+               <item>
+                  <p><code>$data</code> is the data to be converted.</p>
+               </item>
+               <item>
+                  <p><code>$radix</code> is the radix used to provide the conversion of $data.</p>
+               </item>               
+            </ulist>            
+         </div2>  
+      </div1>                        
+   </body>
+   <back>
+      <div1>
+         <head>References</head>
+         <blist>
+	            <bibl id="xpath-30" key="XPath 3.0">
+	               <loc href="http://w3.org/TR/xpath-30/">XML Path Language (XPath) 3.0</loc>.
+	               Jonathan Robie, Don Chamberlin, Michael Dyck, John Snelson, editors. W3C Working Draft, 13 December 2011.</bibl>
+	            <bibl id="xslt-30" key="XSLT 3.0">                        
+	               <loc href="http://w3.org/TR/xslt-30/">XSL Transformations (XSLT) Version 3.0</loc>.
+	               Michael Kay, editor. W3C Working Draft, 10 July 2012.</bibl>         
+	            <bibl id="xquery-30" key="XQuery 3.0">                        
+	               <loc href="http://w3.org/TR/xquery-30/">XQuery 3.0: An XML Query Language</loc>.
+	               Jonathan Robie, Don Chamberlin, Michael Dyck, John Snelson, editors. W3C Working Draft, 13 December 2011.</bibl>
+            <bibl id="xpath-functions-30" key="XPath and XQuery Functions and Operators 3.0">
+               <loc href="http://w3.org/TR/xpath-functions-30/">XPath and XQuery Functions and Operators 3.0</loc>.
+               Michael Kay, editor. W3C Working Draft, 13 December 2011.</bibl>                                
+            <bibl id="xpath-datamodel-30" key="XQuery and XPath Data Model 3.0">
+               <loc href="http://w3.org/TR/xpath-datamodel-30/">XQuery and XPath Data Model 3.0</loc>.
+               Norman Walsh, Anders Berglund, John Snelson, editors. W3C Working Draft, 13 December 2011.</bibl>               
+            <bibl id="xmlschema11-1" key="W3C XML Schema Definition Language (XSD) 1.1 Part 1: Structures">
+               <loc href="http://w3.org/TR/xmlschema11-1/">W3C XML Schema Definition Language (XSD) 1.1 Part 1: Structures</loc>.
+               Henry S. Thompson, Noah Mendelsohn, David Beech, Murray Maloney, editors. W3C Recommendation, 5 April 2012.</bibl> 
+            <bibl id="xmlschema11-2" key="W3C XML Schema Definition Language (XSD) 1.1 Part 2: Datatypes">
+               <loc href="http://w3.org/TR/xmlschema11-2/">W3C XML Schema Definition Language (XSD) 1.1 Part 2: Datatypes</loc>.
+               David Peterson, Shudi (Sandy) Gao 高殊镝, Ashok Malhotra, C. M. Sperberg-McQueen, Henry S. Thompson, editors. W3C Recommendation, 5 April 2012.</bibl>   
+            <bibl id="rfc2045" key="RFC 2045 - Multipurpose Internet Mail Extensions (MIME) Part One: Format of Internet Message Bodies">
+               <loc href="http://ietf.org/rfc/rfc2045/">Multipurpose Internet Mail Extensions (MIME) Part One: Format of Internet Message Bodies</loc>.
+               N. Freed, N. Borenstein, editors. Network Working Group, November 1996.</bibl>                                          
+         </blist>
+      </div1>
+      <div1>
+         <head>Summary of Error Conditions</head>
+         <blist id="summary-of-error-conditions">
+            <bibl id="errDTCONV01" key="err:DTCONV01">The encoding is not supported.</bibl>
+         </blist>
+      </div1>
+   </back>
+</spec>

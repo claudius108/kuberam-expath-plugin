@@ -1,0 +1,72 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>ro.kuberam.maven.plugins.kuberam-expath-plugin</groupId>
+	<artifactId>generate-lib-files-test</artifactId>
+	<version>0.1</version>
+	<packaging>jar</packaging>
+	<name>Test GenerateLibBasicsMojo</name>
+	<url>http://kuberam.ro/specs/expath/crypto/crypto.html</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>ro.kuberam.maven.plugins</groupId>
+				<artifactId>kuberam-expath-plugin</artifactId>
+				<version>0.3</version>
+				<executions>
+					<execution>
+						<id>generate-crypto.html</id>
+						<phase>test</phase>
+						<goals>
+							<goal>transform-spec-to-html</goal>
+						</goals>
+						<configuration>
+							<specFile>${basedir}/crypto/crypto.xml</specFile>
+							<outputDir>${basedir}/crypto</outputDir>
+						</configuration>
+					</execution>
+					<execution>
+						<id>generate-datatype-conversion.html</id>
+						<phase>test</phase>
+						<goals>
+							<goal>transform-spec-to-html</goal>
+						</goals>
+						<configuration>
+							<specFile>${basedir}/datatype-conversion/datatype-conversion.xml</specFile>
+							<outputDir>${basedir}/datatype-conversion</outputDir>
+						</configuration>
+					</execution>
+					<execution>
+						<id>generate-ft-client.html</id>
+						<phase>test</phase>
+						<goals>
+							<goal>transform-spec-to-html</goal>
+						</goals>
+						<configuration>
+							<specFile>${basedir}/ft-client/ft-client.xml</specFile>
+							<outputDir>${basedir}/ft-client</outputDir>
+						</configuration>
+					</execution>
+					<execution>
+						<id>generate-index</id>
+						<phase>test</phase>
+						<goals>
+							<goal>generate-specs-index</goal>
+						</goals>
+						<configuration>
+							<specsDir>${basedir}</specsDir>
+							<includeSpecs>crypto,datatype-conversion,ft-client</includeSpecs>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>
