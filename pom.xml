@@ -39,9 +39,9 @@
 	</developers>
 
 	<scm>
-		<connection>scm:git:ssh@github.com:claudius108/kuberam.git</connection>
-		<developerConnection>scm:git:ssh@github.com:claudius108/kuberam.git</developerConnection>
-		<url>https://github.com/claudius108/kuberam/tree/master/kuberam-maven-plugins/kuberam-expath-plugin</url>
+		<connection>scm:git:ssh@github.com:claudius108/kuberam-expath-plugin.git</connection>
+		<developerConnection>scm:git:ssh@github.com:claudius108/kuberam-expath-plugin.git</developerConnection>
+		<url>https://github.com/claudius108/kuberam-expath-plugin.git</url>
 	</scm>
 
 	<prerequisites>
