@@ -42,7 +42,7 @@
                             <xsl:choose>
                                 <xsl:when test="ends-with(element()[2], '.jar')">
                                     <jar>
-                                        <xsl:value-of select="element()[2]" />
+                                        <xsl:value-of select="substring(element()[2], 9)" />
                                     </jar>
                                 </xsl:when>
                             </xsl:choose>
