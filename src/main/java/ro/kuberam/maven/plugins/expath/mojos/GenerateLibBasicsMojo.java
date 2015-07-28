@@ -1,18 +1,5 @@
 package ro.kuberam.maven.plugins.expath.mojos;
 
-import static org.twdata.maven.mojoexecutor.MojoExecutor.artifactId;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.configuration;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.dependencies;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.dependency;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.element;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.executeMojo;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.executionEnvironment;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.goal;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.groupId;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.name;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
-import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
-
 import java.io.File;
 
 import org.apache.maven.plugin.MojoExecutionException;
@@ -23,11 +10,10 @@ import org.codehaus.plexus.util.FileUtils;
 
 import ro.kuberam.maven.plugins.mojos.KuberamAbstractMojo;
 import ro.kuberam.maven.plugins.mojos.NameValuePair;
-import ro.kuberam.maven.plugins.utils.KuberamMojoUtils;
 
 /**
  * Generates the basic files needed for the library implementing the EXPath
- * module. <br/>
+ * module. <br>
  * 
  * @author <a href="mailto:claudius.teodorescu@gmail.com">Claudius
  *         Teodorescu</a>

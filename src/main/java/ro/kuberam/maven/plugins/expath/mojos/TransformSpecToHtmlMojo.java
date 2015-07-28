@@ -12,7 +12,7 @@ import ro.kuberam.maven.plugins.mojos.KuberamAbstractMojo;
 import ro.kuberam.maven.plugins.mojos.NameValuePair;
 
 /**
- * Transforms an EXPath specification to HTML format. <br/>
+ * Transforms an EXPath specification to HTML format. <br>
  * 
  * @author <a href="mailto:claudius.teodorescu@gmail.com">Claudius
  *         Teodorescu</a>

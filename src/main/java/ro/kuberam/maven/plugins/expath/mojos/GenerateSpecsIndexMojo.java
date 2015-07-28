@@ -16,7 +16,7 @@ import ro.kuberam.maven.plugins.mojos.NameValuePair;
 
 /**
  * Generates the HTML index for a directory containing EXPath specifications.
- * The index will but generated in the directory containing the specifications. <br/>
+ * The index will but generated in the directory containing the specifications. <br>
  * 
  * @author <a href="mailto:claudius.teodorescu@gmail.com">Claudius
  *         Teodorescu</a>

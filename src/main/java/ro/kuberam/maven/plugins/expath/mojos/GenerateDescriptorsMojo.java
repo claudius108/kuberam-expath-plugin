@@ -7,7 +7,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import ro.kuberam.maven.plugins.mojos.KuberamAbstractMojo;
 
 /**
- * Generates the descriptors for a package (TBD). <br/>
+ * Generates the descriptors for a package (TBD). <br>
  * 
  * @author <a href="mailto:claudius.teodorescu@gmail.com">Claudius Teodorescu</a>
  * 

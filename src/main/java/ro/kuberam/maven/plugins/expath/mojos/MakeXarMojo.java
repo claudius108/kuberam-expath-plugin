@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.jar.Attributes;
 
-import org.apache.maven.model.FileSet;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
@@ -20,7 +19,6 @@ import org.codehaus.plexus.archiver.ArchiveEntry;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.ResourceIterator;
 import org.codehaus.plexus.archiver.zip.ZipArchiver;
-import org.codehaus.plexus.components.io.fileselectors.FileSelector;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 import org.eclipse.aether.RepositorySystem;
@@ -33,12 +31,11 @@ import org.eclipse.aether.resolution.ArtifactResult;
 import ro.kuberam.maven.plugins.expath.DefaultFileSet;
 import ro.kuberam.maven.plugins.expath.DependencySet;
 import ro.kuberam.maven.plugins.expath.DescriptorConfiguration;
-import ro.kuberam.maven.plugins.expath.Utils;
 import ro.kuberam.maven.plugins.mojos.KuberamAbstractMojo;
 import ro.kuberam.maven.plugins.mojos.NameValuePair;
 
 /**
- * Assembles a package. <br/>
+ * Assembles a package. <br>
  * 
  * @author <a href="mailto:claudius.teodorescu@gmail.com">Claudius
  *         Teodorescu</a>
