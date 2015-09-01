@@ -20,7 +20,7 @@
 
     <xsl:template match="/">
         <xsl:choose>
-            <xsl:when test="/*/*[local-name() = 'dependency' and @processor = 'http://exist-db.org/']">
+            <xsl:when test="/*/*[local-name() = 'dependency' and @processor = 'http://exist-db.org']">
                 <!-- generate exist.xml -->
                 <xsl:result-document href="{concat($package-dir, '/exist.xml')}">
                     <package xmlns="http://exist-db.org/ns/expath-pkg">
