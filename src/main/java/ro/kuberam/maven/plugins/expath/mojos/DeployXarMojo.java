@@ -9,7 +9,8 @@ import ro.kuberam.maven.plugins.mojos.KuberamAbstractMojo;
 /**
  * Deploys a package in a repository (TBD). <br>
  * 
- * @author <a href="mailto:claudius.teodorescu@gmail.com">Claudius Teodorescu</a>
+ * @author <a href="mailto:claudius.teodorescu@gmail.com">Claudius
+ *         Teodorescu</a>
  * 
  */
 
