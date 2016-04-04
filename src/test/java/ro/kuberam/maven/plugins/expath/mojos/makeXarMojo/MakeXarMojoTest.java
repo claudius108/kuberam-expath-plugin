@@ -16,19 +16,15 @@ public class MakeXarMojoTest extends KuberamAbstractMojoTestBase {
 
 	@Test
 	public void testApplicationXar() throws Exception {
-		
+
 		String a = "/";
-		
+
 		System.out.println("result: " + a.replaceAll("^/", ""));
-//		final MakeXarMojo mojo = this.mojo();
-//		setVariableValueToObject(
-//				mojo,
-//				"descriptor",
-//				new File(
-//						baseDir
-//								+ "/src/test/resources/ro/kuberam/maven/plugins/expath/mojos/makeXarMojo/application-assembly.xml"));
-//		setVariableValueToObject(mojo, "outputDir", new File(projectBuildDirectory));
-//		mojo.execute();
+		final MakeXarMojo mojo = this.mojo();
+		setVariableValueToObject(mojo, "descriptor", new File(baseDir
+				+ "/src/test/resources/ro/kuberam/maven/plugins/expath/mojos/makeXarMojo/application-assembly.xml"));
+		setVariableValueToObject(mojo, "outputDir", new File(projectBuildDirectory));
+		mojo.execute();
 	}
 
 	private MakeXarMojo mojo() throws Exception {
