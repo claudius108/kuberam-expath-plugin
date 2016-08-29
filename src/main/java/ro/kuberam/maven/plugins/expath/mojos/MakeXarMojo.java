@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.JarURLConnection;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -64,8 +65,8 @@ public class MakeXarMojo extends KuberamAbstractMojo {
 
 		// test if descriptor file exists
 		if (!descriptor.exists()) {
-			throw new MojoExecutionException("Global descriptor file '" + descriptor.getAbsolutePath()
-					+ "' does not exist.");
+			throw new MojoExecutionException(
+					"Global descriptor file '" + descriptor.getAbsolutePath() + "' does not exist.");
 		}
 
 		// set needed variables
@@ -83,8 +84,7 @@ public class MakeXarMojo extends KuberamAbstractMojo {
 
 		// filter the descriptor file
 		filterResource(descriptor.getParent(), assemblyDescriptorName, archiveTmpDirectoryPath, outputDir);
-		File filteredDescriptor = new File(archiveTmpDirectoryPath + File.separator
-				+ assemblyDescriptorName);
+		File filteredDescriptor = Paths.get(archiveTmpDirectoryPath, assemblyDescriptorName).toFile();
 
 		// get the execution configuration
 		FileReader fileReader;
@@ -103,7 +103,7 @@ public class MakeXarMojo extends KuberamAbstractMojo {
 
 		// set the zip archiver
 		zipArchiver.setCompress(true);
-		zipArchiver.setDestFile(new File(outputDirectoryPath + File.separator + finalName + ".xar"));
+		zipArchiver.setDestFile(Paths.get(outputDirectoryPath, finalName + ".xar").toFile());
 		zipArchiver.setForced(true);
 
 		// process the maven type dependencies
@@ -113,8 +113,8 @@ public class MakeXarMojo extends KuberamAbstractMojo {
 			// define the artifact
 			Artifact artifactReference;
 			try {
-				artifactReference = new DefaultArtifact(dependencySet.groupId + ":"
-						+ dependencySet.artifactId + ":" + dependencySet.version);
+				artifactReference = new DefaultArtifact(
+						dependencySet.groupId + ":" + dependencySet.artifactId + ":" + dependencySet.version);
 			} catch (IllegalArgumentException e) {
 				throw new MojoFailureException(e.getMessage(), e);
 			}
@@ -142,7 +142,7 @@ public class MakeXarMojo extends KuberamAbstractMojo {
 			String artifactFileName = artifactFile.getName();
 			String dependencySetOutputDirectory = dependencySet.outputDirectory;
 			String archiveComponentPath = artifactFileName;
-			
+
 			dependencySetOutputDirectory = dependencySetOutputDirectory + artifactFileName;
 
 			// add file to archive
@@ -173,15 +173,15 @@ public class MakeXarMojo extends KuberamAbstractMojo {
 
 			// resource files
 			if (entryPath.endsWith(".jar")) {
-				components += "<resource><public-uri>" + moduleNamespace + "</public-uri><file>"
-						+ entryPath + "</file></resource>";
+				components += "<resource><public-uri>" + moduleNamespace + "</public-uri><file>" + entryPath
+						+ "</file></resource>";
 			}
 		}
 
 		project.getModel().addProperty("components", components);
 
 		// create and filter the components descriptor
-		File componentsTemplateFile = new File(archiveTmpDirectoryPath + File.separator + "components.xml");
+		File componentsTemplateFile = Paths.get(archiveTmpDirectoryPath, "components.xml").toFile();
 		try {
 			FileUtils.fileWrite(componentsTemplateFile, "UTF-8", componentsTemplateFileContent);
 		} catch (IOException e2) {
@@ -191,18 +191,17 @@ public class MakeXarMojo extends KuberamAbstractMojo {
 
 		// generate the expath descriptors
 
-		NameValuePair[] parameters = new NameValuePair[] { new NameValuePair("package-dir", new File(
-				descriptorsDirectoryPath).toURI().toString()) };
+		NameValuePair[] parameters = new NameValuePair[] {
+				new NameValuePair("package-dir", Paths.get(descriptorsDirectoryPath).toString()) };
 
 		xsltTransform(filteredDescriptor,
-				this.getClass().getResource("/ro/kuberam/maven/plugins/expath/generate-descriptors.xsl")
-						.toString(), descriptorsDirectoryPath, parameters);
+				this.getClass().getResource("/ro/kuberam/maven/plugins/expath/generate-descriptors.xsl").toString(),
+				descriptorsDirectoryPath, parameters);
 
 		// add the expath descriptors
-		File descriptorsDirectory = new File(descriptorsDirectoryPath);
+		File descriptorsDirectory = Paths.get(descriptorsDirectoryPath).toFile();
 		for (String descriptorFileName : descriptorsDirectory.list()) {
-			zipArchiver.addFile(new File(descriptorsDirectoryPath + File.separator + descriptorFileName),
-					descriptorFileName);
+			zipArchiver.addFile(Paths.get(descriptorsDirectoryPath, descriptorFileName).toFile(), descriptorFileName);
 		}
 
 		try {
