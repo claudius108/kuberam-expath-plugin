@@ -3,11 +3,13 @@ package ro.kuberam.maven.plugins.expath.mojos.transformSpecToHtml;
 import java.io.File;
 
 import org.apache.maven.project.MavenProject;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import ro.kuberam.maven.plugins.expath.mojos.TransformSpecToHtmlMojo;
 import ro.kuberam.maven.plugins.mojos.KuberamAbstractMojoTestBase;
 
+@Ignore
 public class TransformSpecToHtmlMojoTest extends KuberamAbstractMojoTestBase {
 
 	@Test

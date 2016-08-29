@@ -7,11 +7,13 @@ import java.io.File;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.filtering.MavenResourcesFiltering;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import ro.kuberam.maven.plugins.expath.mojos.MakeXarMojo;
 import ro.kuberam.maven.plugins.mojos.KuberamAbstractMojoTestBase;
 
+@Ignore
 public class MakeXarMojoTest extends KuberamAbstractMojoTestBase {
 
 	@Test
