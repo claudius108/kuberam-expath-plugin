@@ -54,7 +54,7 @@
 		<java-version>1.8</java-version>
 		<mavenVersion>3.3.3</mavenVersion>
 		<aetherVersion>0.9.0.M3</aetherVersion>
-		<mavenPluginPluginVersion>3.3</mavenPluginPluginVersion>
+		<mavenPluginPluginVersion>3.4</mavenPluginPluginVersion>
 	</properties>
 
 	<dependencies>
