@@ -91,7 +91,7 @@
 		<dependency>
 			<groupId>ro.kuberam.maven.plugins</groupId>
 			<artifactId>abstract</artifactId>
-			<version>0.1.4</version>
+			<version>0.1.5</version>
 		</dependency>
 		<!-- test -->
 		<dependency>
@@ -127,7 +127,7 @@
 		<dependency>
 			<groupId>ro.kuberam.maven.plugins</groupId>
 			<artifactId>abstract</artifactId>
-			<version>0.1.4</version>
+			<version>0.1.5</version>
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
