@@ -5,6 +5,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.JarURLConnection;
 import java.net.URL;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -74,8 +77,7 @@ public class MakeXarMojo extends KuberamAbstractMojo {
 		String assemblyDescriptorName = descriptor.getName();
 		String archiveTmpDirectoryPath = projectBuildDirectory + File.separator + "make-xar-tmp";
 		String components = "";
-		String descriptorsDirectoryPath = outputDirectoryPath + File.separator + "expath-descriptors-"
-				+ UUID.randomUUID();
+		Path descriptorsDirectoryPath = Paths.get(outputDirectoryPath, "expath-descriptors-" + UUID.randomUUID());
 
 		// Plugin xarPlugin =
 		// project.getPlugin("ro.kuberam.maven.plugins:kuberam-xar-plugin");
@@ -190,22 +192,37 @@ public class MakeXarMojo extends KuberamAbstractMojo {
 		} catch (IOException e2) {
 			e2.printStackTrace();
 		}
-		filterResource(archiveTmpDirectoryPath, "components.xml", descriptorsDirectoryPath, outputDir);
+		filterResource(archiveTmpDirectoryPath, "components.xml", descriptorsDirectoryPath.toString(), outputDir);
 
 		// generate the expath descriptors
 
 		NameValuePair[] parameters = new NameValuePair[] {
-				new NameValuePair("package-dir", Paths.get(descriptorsDirectoryPath).toString()) };
+				new NameValuePair("package-dir", descriptorsDirectoryPath.toString()) };
 
 		xsltTransform(filteredDescriptor,
 				this.getClass().getResource("/ro/kuberam/maven/plugins/expath/generate-descriptors.xsl").toString(),
-				descriptorsDirectoryPath, parameters);
+				descriptorsDirectoryPath.toString(), parameters);
 
 		// add the expath descriptors
-		File descriptorsDirectory = Paths.get(descriptorsDirectoryPath).toFile();
-		for (String descriptorFileName : descriptorsDirectory.list()) {
-			zipArchiver.addFile(Paths.get(descriptorsDirectoryPath, descriptorFileName).toFile(), descriptorFileName);
+		// File descriptorsDirectory = descriptorsDirectoryPath.toFile();
+		// try {
+		// Files.list(descriptorsDirectoryPath).forEach(zipArchiver::addFile);
+		// } catch (IOException e) {
+		// e.printStackTrace();
+		// }
+
+		try (DirectoryStream<Path> stream = Files.newDirectoryStream(descriptorsDirectoryPath)) {
+			for (Path entry : stream) {
+				zipArchiver.addFile(entry.toFile(), entry.getFileName().toString());
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
+		//
+		// for (String descriptorFileName : descriptorsDirectory.list()) {
+		// zipArchiver.addFile(descriptorsDirectoryPath.resolve(descriptorFileName).toFile(),
+		// descriptorFileName);
+		// }
 
 		try {
 			zipArchiver.createArchive();
