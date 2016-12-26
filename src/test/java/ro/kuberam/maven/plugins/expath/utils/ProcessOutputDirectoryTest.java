@@ -6,7 +6,7 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.junit.Before;
 import org.junit.Test;
 
-import ro.kuberam.maven.plugins.expath.Utils;
+import ro.kuberam.maven.plugins.expath.DescriptorConfiguration;
 
 public class ProcessOutputDirectoryTest {
 	
@@ -24,7 +24,7 @@ public class ProcessOutputDirectoryTest {
 	public void testNullOutputDirectory() throws Exception {
 		parentElement.removeChild(0);
 		
-		String processedOutputDirectory = Utils.getOutputDirectory(parentElement);
+		String processedOutputDirectory = DescriptorConfiguration.getOutputDirectory(parentElement);
 		assertTrue(processedOutputDirectory.equals(""));
 	}
 
@@ -32,7 +32,7 @@ public class ProcessOutputDirectoryTest {
 	public void testEmptyOutputDirectory() throws Exception {
 		outputDirectoryElement.setValue(""); 		
 		
-		String processedOutputDirectory = Utils.getOutputDirectory(parentElement);
+		String processedOutputDirectory = DescriptorConfiguration.getOutputDirectory(parentElement);
 		assertTrue(processedOutputDirectory.equals(""));
 	}
 
@@ -40,7 +40,7 @@ public class ProcessOutputDirectoryTest {
 	public void testForwardSlashOutputDirectory() throws Exception {
 		outputDirectoryElement.setValue("/"); 
 		
-		String processedOutputDirectory = Utils.getOutputDirectory(parentElement);
+		String processedOutputDirectory = DescriptorConfiguration.getOutputDirectory(parentElement);
 		assertTrue(processedOutputDirectory.equals(""));
 	}
 
@@ -48,7 +48,7 @@ public class ProcessOutputDirectoryTest {
 	public void testSimpleOutputDirectory1() throws Exception {
 		outputDirectoryElement.setValue("a"); 
 		
-		String processedOutputDirectory = Utils.getOutputDirectory(parentElement);
+		String processedOutputDirectory = DescriptorConfiguration.getOutputDirectory(parentElement);
 		assertTrue(processedOutputDirectory.equals("a/"));
 	}
 
@@ -56,7 +56,7 @@ public class ProcessOutputDirectoryTest {
 	public void testSimpleOutputDirectory2() throws Exception {
 		outputDirectoryElement.setValue("/a"); 
 		
-		String processedOutputDirectory = Utils.getOutputDirectory(parentElement);
+		String processedOutputDirectory = DescriptorConfiguration.getOutputDirectory(parentElement);
 		assertTrue(processedOutputDirectory.equals("a/"));
 	}
 
@@ -64,7 +64,7 @@ public class ProcessOutputDirectoryTest {
 	public void testSimpleOutputDirectory3() throws Exception {
 		outputDirectoryElement.setValue("/a/"); 
 		
-		String processedOutputDirectory = Utils.getOutputDirectory(parentElement);
+		String processedOutputDirectory = DescriptorConfiguration.getOutputDirectory(parentElement);
 		assertTrue(processedOutputDirectory.equals("a/"));
 	}
 
@@ -72,7 +72,7 @@ public class ProcessOutputDirectoryTest {
 	public void testComplexOutputDirectory1() throws Exception {
 		outputDirectoryElement.setValue("a/b"); 
 		
-		String processedOutputDirectory = Utils.getOutputDirectory(parentElement);
+		String processedOutputDirectory = DescriptorConfiguration.getOutputDirectory(parentElement);
 		assertTrue(processedOutputDirectory.equals("a/b/"));
 	}
 	
@@ -80,7 +80,7 @@ public class ProcessOutputDirectoryTest {
 	public void testComplexOutputDirectory2() throws Exception {
 		outputDirectoryElement.setValue("/a/b"); 
 		
-		String processedOutputDirectory = Utils.getOutputDirectory(parentElement);
+		String processedOutputDirectory = DescriptorConfiguration.getOutputDirectory(parentElement);
 		assertTrue(processedOutputDirectory.equals("a/b/"));
 	}
 	
@@ -88,7 +88,7 @@ public class ProcessOutputDirectoryTest {
 	public void testComplexOutputDirectory3() throws Exception {
 		outputDirectoryElement.setValue("/a/b/"); 
 		
-		String processedOutputDirectory = Utils.getOutputDirectory(parentElement);
+		String processedOutputDirectory = DescriptorConfiguration.getOutputDirectory(parentElement);
 		assertTrue(processedOutputDirectory.equals("a/b/"));
 	}	
 

@@ -26,7 +26,7 @@ public class DescriptorConfiguration extends Xpp3Dom {
 				DefaultFileSet fileSet = new DefaultFileSet();
 				fileSet.setDirectory(new File(fileSetChild.getChild("directory").getValue()));
 
-				String outputDirectory = Utils.getOutputDirectory(fileSetChild);
+				String outputDirectory = getOutputDirectory(fileSetChild);
 
 				fileSet.setPrefix(outputDirectory);
 
@@ -64,11 +64,12 @@ public class DescriptorConfiguration extends Xpp3Dom {
 			Xpp3Dom[] dependencySetChildren = dependencySetsElement.getChildren("dependencySet");
 			for (Xpp3Dom dependencySetChild : dependencySetChildren) {
 
-				String outputDirectory = Utils.getOutputDirectory(dependencySetChild);
+				String outputDirectory = getOutputDirectory(dependencySetChild);
 
 				dependencySets.add(new DependencySet(dependencySetChild.getChild("groupId").getValue(),
-						dependencySetChild.getChild("artifactId").getValue(), dependencySetChild.getChild(
-								"version").getValue(), outputDirectory));
+						dependencySetChild.getChild("artifactId").getValue(),
+						dependencySetChild.getChild("version").getValue(), outputDirectory,
+						dependencySetChild.getChild("outputFileNameMapping").getValue()));
 			}
 		}
 
@@ -81,6 +82,23 @@ public class DescriptorConfiguration extends Xpp3Dom {
 			return moduleNamespaceElement.getValue();
 		}
 		return "";
+	}
+
+	public static String getOutputDirectory(Xpp3Dom parentElement) {
+		Xpp3Dom outputDirectoryElement = parentElement.getChild("outputDirectory");
+
+		String outputDirectory = "";
+		if (null != outputDirectoryElement) {
+			outputDirectory = outputDirectoryElement.getValue();
+		}
+
+		if (!outputDirectory.endsWith("/")) {
+			outputDirectory = outputDirectory + "/";
+		}
+
+		outputDirectory = outputDirectory.replaceAll("^/", "");
+
+		return outputDirectory;
 	}
 
 }

@@ -109,6 +109,8 @@ public class MakeXarMojo extends KuberamAbstractMojo {
 		// process the maven type dependencies
 		for (int i = 0, il = dependencySets.size(); i < il; i++) {
 			DependencySet dependencySet = dependencySets.get(i);
+			String dependencySetOutputDirectory = dependencySet.outputDirectory;
+			String outputFileNameMapping = dependencySet.outputFileNameMapping;
 
 			// define the artifact
 			Artifact artifactReference;
@@ -140,9 +142,10 @@ public class MakeXarMojo extends KuberamAbstractMojo {
 			File artifactFile = artifact.getFile();
 			String artifactFileAbsolutePath = artifactFile.getAbsolutePath();
 			String artifactFileName = artifactFile.getName();
-			String dependencySetOutputDirectory = dependencySet.outputDirectory;
+			if (outputFileNameMapping != null) {
+				artifactFileName = outputFileNameMapping;
+			}
 			String archiveComponentPath = artifactFileName;
-
 			dependencySetOutputDirectory = dependencySetOutputDirectory + artifactFileName;
 
 			// add file to archive
