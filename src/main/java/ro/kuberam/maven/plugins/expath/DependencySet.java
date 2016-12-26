@@ -12,12 +12,10 @@ package ro.kuberam.maven.plugins.expath;
 public class DependencySet {
 
 	public String groupId;
-
 	public String artifactId;
-
 	public String version;
-
 	public String outputDirectory;
+	public String outputFileNameMapping;	
 
 	public String toString() {
 		return groupId + ":" + artifactId + ":" + version + " " + outputDirectory;
@@ -27,11 +25,12 @@ public class DependencySet {
 
 	}
 
-	public DependencySet(String groupId, String artifactId, String version, String outputDirectory) {
+	public DependencySet(String groupId, String artifactId, String version, String outputDirectory, String outputFileNameMapping) {
 		this.groupId = groupId;
 		this.artifactId = artifactId;
 		this.version = version;
 		this.outputDirectory = outputDirectory;
+		this.outputFileNameMapping = outputFileNameMapping;
 	}
 
 }

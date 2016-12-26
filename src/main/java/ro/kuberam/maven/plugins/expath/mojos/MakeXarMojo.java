@@ -120,7 +120,7 @@ public class MakeXarMojo extends KuberamAbstractMojo {
 			}
 
 			String artifactIdentifier = artifactReference.toString();
-			getLog().info("Resolving artifact: " + artifactReference);
+			getLog().debug("Resolving artifact: " + artifactReference);
 
 			// resolve the artifact
 			ArtifactRequest request = new ArtifactRequest();
