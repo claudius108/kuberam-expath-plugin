@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.jar.Attributes;
 
+import javax.xml.transform.stream.StreamSource;
+
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
@@ -32,6 +34,15 @@ import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
 
+import net.sf.saxon.s9api.Processor;
+import net.sf.saxon.s9api.QName;
+import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.Serializer;
+import net.sf.saxon.s9api.XdmAtomicValue;
+import net.sf.saxon.s9api.XdmNode;
+import net.sf.saxon.s9api.XsltCompiler;
+import net.sf.saxon.s9api.XsltExecutable;
+import net.sf.saxon.s9api.XsltTransformer;
 import ro.kuberam.maven.plugins.expath.DefaultFileSet;
 import ro.kuberam.maven.plugins.expath.DependencySet;
 import ro.kuberam.maven.plugins.expath.DescriptorConfiguration;
@@ -78,6 +89,7 @@ public class MakeXarMojo extends KuberamAbstractMojo {
 		String archiveTmpDirectoryPath = projectBuildDirectory + File.separator + "make-xar-tmp";
 		String components = "";
 		Path descriptorsDirectoryPath = Paths.get(outputDirectoryPath, "expath-descriptors-" + UUID.randomUUID());
+		getLog().info("descriptorsDirectoryPath: " + descriptorsDirectoryPath);
 
 		// Plugin xarPlugin =
 		// project.getPlugin("ro.kuberam.maven.plugins:kuberam-xar-plugin");
@@ -195,14 +207,30 @@ public class MakeXarMojo extends KuberamAbstractMojo {
 		filterResource(archiveTmpDirectoryPath, "components.xml", descriptorsDirectoryPath.toString(), outputDir);
 
 		// generate the expath descriptors
-
 		NameValuePair[] parameters = new NameValuePair[] {
 				new NameValuePair("package-dir", descriptorsDirectoryPath.toString()) };
 
-		xsltTransform(filteredDescriptor,
-				this.getClass().getResource("/ro/kuberam/maven/plugins/expath/generate-descriptors.xsl").toString(),
-				descriptorsDirectoryPath.toString(), parameters);
-
+		try {
+			Processor proc = new Processor(false);
+			XsltCompiler comp = proc.newXsltCompiler();
+			XsltExecutable exp = comp.compile(new StreamSource(this.getClass()
+					.getResource("/ro/kuberam/maven/plugins/expath/generate-descriptors.xsl").toString()));
+			XdmNode source = proc.newDocumentBuilder().build(new StreamSource(filteredDescriptor));
+			Serializer out = new Serializer();
+			out.setOutputProperty(Serializer.Property.METHOD, "xml");
+			out.setOutputProperty(Serializer.Property.INDENT, "yes");
+			out.setOutputFile(new File("output.xml"));
+			XsltTransformer transformer = exp.load();
+			transformer.setInitialContextNode(source);
+			transformer.setDestination(out);
+			transformer.setBaseOutputURI(descriptorsDirectoryPath.toString());
+			for (NameValuePair parameter : parameters) {
+				transformer.setParameter(new QName(parameter.getName()), new XdmAtomicValue(parameter.getValue()));
+			}
+			transformer.transform();
+		} catch (SaxonApiException e) {
+			e.printStackTrace();
+		}
 		// add the expath descriptors
 		// File descriptorsDirectory = descriptorsDirectoryPath.toFile();
 		// try {
@@ -218,11 +246,6 @@ public class MakeXarMojo extends KuberamAbstractMojo {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		//
-		// for (String descriptorFileName : descriptorsDirectory.list()) {
-		// zipArchiver.addFile(descriptorsDirectoryPath.resolve(descriptorFileName).toFile(),
-		// descriptorFileName);
-		// }
 
 		try {
 			zipArchiver.createArchive();
