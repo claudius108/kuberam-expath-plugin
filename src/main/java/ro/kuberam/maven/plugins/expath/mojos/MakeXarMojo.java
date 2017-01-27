@@ -156,7 +156,7 @@ public class MakeXarMojo extends KuberamAbstractMojo {
 			File artifactFile = artifact.getFile();
 			String artifactFileAbsolutePath = artifactFile.getAbsolutePath();
 			String artifactFileName = artifactFile.getName();
-			if (outputFileNameMapping != null) {
+			if (outputFileNameMapping != "") {
 				artifactFileName = outputFileNameMapping;
 			}
 			String archiveComponentPath = artifactFileName;

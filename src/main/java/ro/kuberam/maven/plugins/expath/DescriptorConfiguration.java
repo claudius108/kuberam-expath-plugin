@@ -66,10 +66,16 @@ public class DescriptorConfiguration extends Xpp3Dom {
 
 				String outputDirectory = getOutputDirectory(dependencySetChild);
 
+				Xpp3Dom outputFileNameMappingElement = dependencySetChild.getChild("outputFileNameMapping");
+
+				String outputFileNameMapping = "";
+				if (null != outputFileNameMappingElement) {
+					outputFileNameMapping = outputFileNameMappingElement.getValue();
+				}
+
 				dependencySets.add(new DependencySet(dependencySetChild.getChild("groupId").getValue(),
 						dependencySetChild.getChild("artifactId").getValue(),
-						dependencySetChild.getChild("version").getValue(), outputDirectory,
-						dependencySetChild.getChild("outputFileNameMapping").getValue()));
+						dependencySetChild.getChild("version").getValue(), outputDirectory, outputFileNameMapping));
 			}
 		}
 
