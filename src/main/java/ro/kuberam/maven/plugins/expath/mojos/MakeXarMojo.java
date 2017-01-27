@@ -160,6 +160,8 @@ public class MakeXarMojo extends KuberamAbstractMojo {
 				artifactFileName = outputFileNameMapping;
 			}
 			String archiveComponentPath = artifactFileName;
+			getLog().debug("archiveComponentPath: " + archiveComponentPath);
+			
 			dependencySetOutputDirectory = dependencySetOutputDirectory + artifactFileName;
 
 			// add file to archive
@@ -167,6 +169,7 @@ public class MakeXarMojo extends KuberamAbstractMojo {
 				archiveComponentPath = "content/" + archiveComponentPath;
 			}
 			zipArchiver.addFile(artifactFile, archiveComponentPath);
+			getLog().debug("archiveComponentPath: " + archiveComponentPath);
 
 			// collect metadata about module's java main class for exist.xml
 			if (i == 0 && artifactIdentifier.contains(":jar:")) {
