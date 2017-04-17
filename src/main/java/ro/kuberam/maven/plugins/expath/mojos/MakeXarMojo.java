@@ -43,8 +43,8 @@ import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XsltCompiler;
 import net.sf.saxon.s9api.XsltExecutable;
 import net.sf.saxon.s9api.XsltTransformer;
-import ro.kuberam.maven.plugins.expath.DefaultFileSet;
-import ro.kuberam.maven.plugins.expath.DependencySet;
+import ro.kuberam.maven.plugins.expath.ExpathFileSet;
+import ro.kuberam.maven.plugins.expath.ExpathDependencySet;
 import ro.kuberam.maven.plugins.expath.DescriptorConfiguration;
 import ro.kuberam.maven.plugins.mojos.KuberamAbstractMojo;
 import ro.kuberam.maven.plugins.mojos.NameValuePair;
@@ -111,8 +111,8 @@ public class MakeXarMojo extends KuberamAbstractMojo {
 		}
 
 		// extract settings from execution configuration
-		List<DefaultFileSet> fileSets = executionConfig.getFileSets();
-		List<DependencySet> dependencySets = executionConfig.getDependencySets();
+		List<ExpathFileSet> fileSets = executionConfig.getFileSets();
+		List<ExpathDependencySet> dependencySets = executionConfig.getDependencySets();
 		String moduleNamespace = executionConfig.getModuleNamespace();
 
 		// set the zip archiver
@@ -122,7 +122,7 @@ public class MakeXarMojo extends KuberamAbstractMojo {
 
 		// process the maven type dependencies
 		for (int i = 0, il = dependencySets.size(); i < il; i++) {
-			DependencySet dependencySet = dependencySets.get(i);
+			ExpathDependencySet dependencySet = dependencySets.get(i);
 			String dependencySetOutputDirectory = dependencySet.outputDirectory;
 			String outputFileNameMapping = dependencySet.outputFileNameMapping;
 
@@ -154,6 +154,7 @@ public class MakeXarMojo extends KuberamAbstractMojo {
 
 			Artifact artifact = artifactResult.getArtifact();
 			File artifactFile = artifact.getFile();
+			getLog().info("artifactFile: " + artifactFile);
 			String artifactFileAbsolutePath = artifactFile.getAbsolutePath();
 			String artifactFileName = artifactFile.getName();
 			if (outputFileNameMapping != "") {
@@ -161,7 +162,7 @@ public class MakeXarMojo extends KuberamAbstractMojo {
 			}
 			String archiveComponentPath = artifactFileName;
 			getLog().debug("archiveComponentPath: " + archiveComponentPath);
-			
+
 			dependencySetOutputDirectory = dependencySetOutputDirectory + artifactFileName;
 
 			// add file to archive
@@ -181,7 +182,7 @@ public class MakeXarMojo extends KuberamAbstractMojo {
 		}
 
 		// process the file sets
-		for (DefaultFileSet fileSet : fileSets) {
+		for (ExpathFileSet fileSet : fileSets) {
 			zipArchiver.addFileSet(fileSet);
 		}
 

@@ -17,13 +17,13 @@ public class DescriptorConfiguration extends Xpp3Dom {
 	 */
 	private static final long serialVersionUID = -8323628485538303936L;
 
-	public List<DefaultFileSet> getFileSets() {
-		List<DefaultFileSet> fileSets = new ArrayList<DefaultFileSet>();
+	public List<ExpathFileSet> getFileSets() {
+		List<ExpathFileSet> fileSets = new ArrayList<ExpathFileSet>();
 		Xpp3Dom fileSetsElement = this.getChild("fileSets");
 		if (null != fileSetsElement) {
 			Xpp3Dom[] fileSetChildren = fileSetsElement.getChildren("fileSet");
 			for (Xpp3Dom fileSetChild : fileSetChildren) {
-				DefaultFileSet fileSet = new DefaultFileSet();
+				ExpathFileSet fileSet = new ExpathFileSet();
 				fileSet.setDirectory(new File(fileSetChild.getChild("directory").getValue()));
 
 				String outputDirectory = getOutputDirectory(fileSetChild);
@@ -57,8 +57,8 @@ public class DescriptorConfiguration extends Xpp3Dom {
 		return fileSets;
 	}
 
-	public List<DependencySet> getDependencySets() {
-		List<DependencySet> dependencySets = new ArrayList<DependencySet>();
+	public List<ExpathDependencySet> getDependencySets() {
+		List<ExpathDependencySet> dependencySets = new ArrayList<ExpathDependencySet>();
 		Xpp3Dom dependencySetsElement = this.getChild("dependencySets");
 		if (null != dependencySetsElement) {
 			Xpp3Dom[] dependencySetChildren = dependencySetsElement.getChildren("dependencySet");
@@ -73,7 +73,7 @@ public class DescriptorConfiguration extends Xpp3Dom {
 					outputFileNameMapping = outputFileNameMappingElement.getValue();
 				}
 
-				dependencySets.add(new DependencySet(dependencySetChild.getChild("groupId").getValue(),
+				dependencySets.add(new ExpathDependencySet(dependencySetChild.getChild("groupId").getValue(),
 						dependencySetChild.getChild("artifactId").getValue(),
 						dependencySetChild.getChild("version").getValue(), outputDirectory, outputFileNameMapping));
 			}

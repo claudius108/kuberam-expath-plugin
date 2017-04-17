@@ -1,6 +1,6 @@
 package ro.kuberam.maven.plugins.expath;
 
-public class DefaultFileSet extends org.codehaus.plexus.archiver.util.DefaultFileSet {
+public class ExpathFileSet extends org.codehaus.plexus.archiver.util.DefaultFileSet {
 
 	public String[] includes;
 	public String[] excludes;

@@ -9,7 +9,7 @@ package ro.kuberam.maven.plugins.expath;
  * @version $Revision$ $Date$
  */
 
-public class DependencySet {
+public class ExpathDependencySet {
 
 	public String groupId;
 	public String artifactId;
@@ -21,11 +21,11 @@ public class DependencySet {
 		return groupId + ":" + artifactId + ":" + version + " " + outputDirectory;
 	}
 
-	public DependencySet() {
+	public ExpathDependencySet() {
 
 	}
 
-	public DependencySet(String groupId, String artifactId, String version, String outputDirectory, String outputFileNameMapping) {
+	public ExpathDependencySet(String groupId, String artifactId, String version, String outputDirectory, String outputFileNameMapping) {
 		this.groupId = groupId;
 		this.artifactId = artifactId;
 		this.version = version;
