@@ -44,6 +44,7 @@ import net.sf.saxon.s9api.XsltCompiler;
 import net.sf.saxon.s9api.XsltExecutable;
 import net.sf.saxon.s9api.XsltTransformer;
 import ro.kuberam.maven.plugins.expath.ExpathFileSet;
+import ro.kuberam.maven.plugins.expath.ExpathXquerySet;
 import ro.kuberam.maven.plugins.expath.ExpathDependencySet;
 import ro.kuberam.maven.plugins.expath.DescriptorConfiguration;
 import ro.kuberam.maven.plugins.mojos.KuberamAbstractMojo;
@@ -113,6 +114,7 @@ public class MakeXarMojo extends KuberamAbstractMojo {
 		// extract settings from execution configuration
 		List<ExpathFileSet> fileSets = executionConfig.getFileSets();
 		List<ExpathDependencySet> dependencySets = executionConfig.getDependencySets();
+		List<ExpathXquerySet> xquerySets = executionConfig.getXquerySets();
 		String moduleNamespace = executionConfig.getModuleNamespace();
 
 		// set the zip archiver
@@ -178,6 +180,18 @@ public class MakeXarMojo extends KuberamAbstractMojo {
 						+ getMainClass(artifactFileAbsolutePath).get(0) + "</file></resource>";
 				components += "<resource><public-uri>http://exist-db.org/ns/expath-pkg/module-namespace</public-uri><file>"
 						+ getMainClass(artifactFileAbsolutePath).get(1) + "</file></resource>";
+			}
+		}
+
+		// process the xquery sets
+
+		for (ExpathXquerySet xquerySet : xquerySets) {
+			zipArchiver.addFileSet(xquerySet);
+
+			String namespace = xquerySet.getNamespace();
+
+			for (String include : xquerySet.getIncludes()) {
+				components += "<xquery><namespace>" + namespace + "</namespace><file>" + include + "</file></xquery>";
 			}
 		}
 
