@@ -81,6 +81,49 @@ public class DescriptorConfiguration extends Xpp3Dom {
 
 		return dependencySets;
 	}
+	
+	public List<ExpathXquerySet> getXquerySets() {
+		List<ExpathXquerySet> xquerySets = new ArrayList<ExpathXquerySet>();
+		Xpp3Dom xquerySetsElement = this.getChild("xquerySets");
+		if (null != xquerySetsElement) {
+			Xpp3Dom[] xquerySetElementChildren = xquerySetsElement.getChildren("xquerySet");
+			for (Xpp3Dom xquerySetElementChild : xquerySetElementChildren) {
+				ExpathXquerySet xquerySet = new ExpathXquerySet();
+				
+				xquerySet.setDirectory(new File(xquerySetElementChild.getChild("directory").getValue()));
+				
+				xquerySet.setNamespace(xquerySetElementChild.getChild("namespace").getValue());
+
+				String outputDirectory = getOutputDirectory(xquerySetElementChild);
+				xquerySet.setPrefix(outputDirectory);
+
+				xquerySet.setIncludes("**/*.*");
+				Xpp3Dom includesElement = xquerySetElementChild.getChild("includes");
+				if (null != includesElement) {
+					String includesString = "";
+					Xpp3Dom[] includeElements = includesElement.getChildren("include");
+					for (Xpp3Dom includeElement : includeElements) {
+						includesString += includeElement.getValue() + ",";
+					}
+					xquerySet.setIncludes(includesString.substring(0, includesString.length() - 1));
+				}
+				
+				xquerySet.setExcludes(".project/,.settings/");
+				Xpp3Dom excludesElement = xquerySetElementChild.getChild("excludes");
+				if (null != excludesElement) {
+					String excludesString = "";
+					Xpp3Dom[] excludeElements = excludesElement.getChildren("exclude");
+					for (Xpp3Dom excludeElement : excludeElements) {
+						excludesString += excludeElement.getValue() + ",";
+					}
+					xquerySet.setExcludes(excludesString + ".project/,.settings/");
+				}
+				xquerySets.add(xquerySet);
+			}
+		}
+
+		return xquerySets;
+	}
 
 	public String getModuleNamespace() {
 		Xpp3Dom moduleNamespaceElement = this.getChild("module-namespace");
