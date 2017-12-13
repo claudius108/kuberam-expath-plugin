@@ -238,9 +238,6 @@ public class MakeXarMojo extends KuberamAbstractMojo {
         filterResource(archiveTmpDirectoryPath, "components.xml", descriptorsDirectoryPath.toString(), outputDir);
 
         // generate the expath descriptors
-        final NameValuePair[] parameters = new NameValuePair[]{
-                new NameValuePair("package-dir", descriptorsDirectoryPath.toString())};
-
         try {
             final Processor proc = new Processor(false);
             final XsltCompiler comp = proc.newXsltCompiler();
@@ -254,10 +251,10 @@ public class MakeXarMojo extends KuberamAbstractMojo {
             final XsltTransformer transformer = exp.load();
             transformer.setInitialContextNode(source);
             transformer.setDestination(out);
-            transformer.setBaseOutputURI(descriptorsDirectoryPath.toString());
-            for (final NameValuePair parameter : parameters) {
-                transformer.setParameter(new QName(parameter.getName()), new XdmAtomicValue(parameter.getValue()));
-            }
+            transformer.setBaseOutputURI(descriptorsDirectoryPath.toUri().toString());
+
+            transformer.setParameter(new QName("package-dir"), new XdmAtomicValue(descriptorsDirectoryPath.toUri()));
+
             transformer.transform();
         } catch (final SaxonApiException e) {
             e.printStackTrace();

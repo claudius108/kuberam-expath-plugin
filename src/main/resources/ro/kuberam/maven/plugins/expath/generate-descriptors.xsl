@@ -6,7 +6,7 @@
 
 	<xsl:output method="xml" />
 
-	<xsl:param name="package-dir" />
+	<xsl:param name="package-dir" as="xs:anyURI"/>
 	<xsl:variable name="package-type" select="/*/pkg:type" />
 	<xsl:variable name="package-version" select="/*/@version" />
 
@@ -15,7 +15,7 @@
 	<xsl:variable name="title" select="/*/pkg:title" />
 	<xsl:variable name="authors" select="/*/pkg:author" />
 	<xsl:variable name="components"
-		select="collection(concat('file://', $package-dir, '?select=components.xml'))/element()" />
+		select="collection(concat($package-dir, '?select=components.xml'))/element()" />
 
 	<xsl:template match="/">
 		<xsl:choose>
@@ -23,7 +23,7 @@
 				test="/*/*[local-name() = 'dependency' and @processor = 'http://exist-db.org']">
 				<!-- generate exist.xml -->
 				<xsl:result-document
-					href="{concat('file://', $package-dir, '/exist.xml')}">
+					href="{concat($package-dir, '/exist.xml')}">
 					<package xmlns="http://exist-db.org/ns/expath-pkg">
 						<xsl:variable name="module-namespace"
 							select="$components//element()[preceding-sibling::*[1] = 'http://exist-db.org/ns/expath-pkg/module-namespace']" />
@@ -54,7 +54,7 @@
 		</xsl:choose>
 
 		<!-- generate cxan.xml -->
-		<xsl:result-document href="{concat('file://', $package-dir, '/cxan.xml')}">
+		<xsl:result-document href="{concat($package-dir, '/cxan.xml')}">
 			<package xmlns="http://cxan.org/ns/package" id="{$abbrev}"
 				name="{$name}" version="{$package-version}">
 				<xsl:for-each select="$authors">
@@ -77,7 +77,7 @@
 
 		<!-- generate expath-pkg.xml -->
 		<xsl:result-document
-			href="{concat('file://', $package-dir, '/expath-pkg.xml')}">
+			href="{concat($package-dir, '/expath-pkg.xml')}">
 			<package xmlns="http://expath.org/ns/pkg" name="{$name}"
 				abbrev="{$abbrev}" version="{$package-version}" spec="1.0">
 				<xsl:copy-of select="$title" />
@@ -101,7 +101,7 @@
 		</xsl:result-document>
 
 		<!-- generate repo.xml -->
-		<xsl:result-document href="{concat('file://', $package-dir, '/repo.xml')}">
+		<xsl:result-document href="{concat($package-dir, '/repo.xml')}">
 			<meta xmlns="http://exist-db.org/xquery/repo" xmlns:repo="http://exist-db.org/xquery/repo">
 				<description>
 					<xsl:value-of select="$title" />
