@@ -87,7 +87,7 @@ public class MakeXarMojo extends KuberamAbstractMojo {
         final String outputDirectoryPath = outputDir.getAbsolutePath();
         final String assemblyDescriptorName = descriptor.getName();
         final String archiveTmpDirectoryPath = projectBuildDirectory + File.separator + "make-xar-tmp";
-        String components = "";
+        final StringBuilder components = new StringBuilder();
         final Path descriptorsDirectoryPath = Paths.get(outputDirectoryPath, "expath-descriptors-" + UUID.randomUUID());
         getLog().info("descriptorsDirectoryPath: " + descriptorsDirectoryPath);
 
@@ -158,7 +158,7 @@ public class MakeXarMojo extends KuberamAbstractMojo {
             getLog().info("artifactFile: " + artifactFile);
             final String artifactFileAbsolutePath = artifactFile.getAbsolutePath();
             String artifactFileName = artifactFile.getName();
-            if (outputFileNameMapping != "") {
+            if (!outputFileNameMapping.isEmpty()) {
                 artifactFileName = outputFileNameMapping;
             }
             String archiveComponentPath = artifactFileName;
@@ -175,10 +175,15 @@ public class MakeXarMojo extends KuberamAbstractMojo {
 
             // collect metadata about module's java main class for exist.xml
             if (i == 0 && artifactIdentifier.contains(":jar:")) {
-                components += "<resource><public-uri>http://exist-db.org/ns/expath-pkg/module-main-class</public-uri><file>"
-                        + getMainClass(artifactFileAbsolutePath).get(0) + "</file></resource>";
-                components += "<resource><public-uri>http://exist-db.org/ns/expath-pkg/module-namespace</public-uri><file>"
-                        + getMainClass(artifactFileAbsolutePath).get(1) + "</file></resource>";
+                components
+                        .append("<resource><public-uri>http://exist-db.org/ns/expath-pkg/module-main-class</public-uri><file>")
+                        .append(getMainClass(artifactFileAbsolutePath).get(0))
+                        .append("</file></resource>");
+
+                components
+                        .append("<resource><public-uri>http://exist-db.org/ns/expath-pkg/module-namespace</public-uri><file>")
+                        .append(getMainClass(artifactFileAbsolutePath).get(1))
+                        .append("</file></resource>");
             }
         }
 
@@ -190,7 +195,12 @@ public class MakeXarMojo extends KuberamAbstractMojo {
             final String namespace = xquerySet.getNamespace();
 
             for (final String include : xquerySet.getIncludes()) {
-                components += "<xquery><namespace>" + namespace + "</namespace><file>" + include + "</file></xquery>";
+                components
+                        .append("<xquery><namespace>")
+                        .append(namespace)
+                        .append("</namespace><file>")
+                        .append(include)
+                        .append("</file></xquery>");
             }
         }
 
@@ -207,12 +217,16 @@ public class MakeXarMojo extends KuberamAbstractMojo {
 
             // resource files
             if (entryPath.endsWith(".jar")) {
-                components += "<resource><public-uri>" + moduleNamespace + "</public-uri><file>" + entryPath
-                        + "</file></resource>";
+                components
+                        .append("<resource><public-uri>")
+                        .append(moduleNamespace)
+                        .append("</public-uri><file>")
+                        .append(entryPath)
+                        .append("</file></resource>");
             }
         }
 
-        project.getModel().addProperty("components", components);
+        project.getModel().addProperty("components", components.toString());
 
         // create and filter the components descriptor
         final File componentsTemplateFile = Paths.get(archiveTmpDirectoryPath, "components.xml").toFile();
