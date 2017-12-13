@@ -3,6 +3,7 @@ package ro.kuberam.maven.plugins.expath.mojos;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -34,88 +35,83 @@ import ro.kuberam.maven.plugins.mojos.KuberamAbstractMojo;
 /**
  * Generates the HTML index for a set of EXPath specifications. The index will
  * but generated in an output directory that has to be specified. <br>
- * 
+ *
  * @author <a href="mailto:claudius.teodorescu@gmail.com">Claudius
- *         Teodorescu</a>
- * 
+ * Teodorescu</a>
  */
 
 @Mojo(name = "generate-specs-index")
 public class GenerateSpecsIndexMojo extends KuberamAbstractMojo {
 
-	/**
-	 * A list of <code>fileSet</code> rules to select the EXPath specifications
-	 * to generate the index for.
-	 * 
-	 * @since 0.4.7
-	 * 
-	 */
-	@Parameter
-	private FileSet[] filesets;
+    /**
+     * A list of <code>fileSet</code> rules to select the EXPath specifications
+     * to generate the index for.
+     *
+     * @since 0.4.7
+     */
+    @Parameter
+    private FileSet[] filesets;
 
-	/**
-	 * The directory where the index file will be saved.
-	 * 
-	 * @since 0.4.7
-	 * 
-	 */
-	@Parameter(required = true)
-	private File outputDir;
+    /**
+     * The directory where the index file will be saved.
+     *
+     * @since 0.4.7
+     */
+    @Parameter(required = true)
+    private File outputDir;
 
-	@Override
-	public void execute() throws MojoExecutionException, MojoFailureException {
+    @Override
+    public void execute() throws MojoExecutionException, MojoFailureException {
 
-		FileSetManager fileSetManager = new FileSetManager();
+        final FileSetManager fileSetManager = new FileSetManager();
+        final List<Path> specPaths = new ArrayList<>();
 
-		List<Path> specPaths = new ArrayList<Path>();
+        final Path outputDirPath = Paths.get(outputDir.getAbsolutePath());
+        final Path outputFilePath = outputDirPath.resolve("index.html");
 
-		Path outputDirPath = Paths.get(outputDir.getAbsolutePath());
-		Path outputFilePath = outputDirPath.resolve("index.html");
+        for (final FileSet fileSet : filesets) {
+            final String directory = fileSet.getDirectory();
+            final String[] includedFiles = fileSetManager.getIncludedFiles(fileSet);
 
-		for (FileSet fileSet : filesets) {
-			String directory = fileSet.getDirectory();
-			String[] includedFiles = fileSetManager.getIncludedFiles(fileSet);
+            for (final String includedFile : includedFiles) {
+                final Path includedFilePath = Paths.get(directory, includedFile).normalize();
 
-			for (String includedFile : includedFiles) {
-				Path includedFilePath = Paths.get(directory, includedFile).normalize();
+                if (Files.isDirectory(includedFilePath)) {
+                    continue;
+                }
 
-				if (Files.isDirectory(includedFilePath)) {
-					continue;
-				}
+                specPaths.add(includedFilePath);
+            }
+        }
+        getLog().debug("specPaths: " + specPaths);
 
-				specPaths.add(includedFilePath);
-			}
-		}
-		getLog().debug("specPaths: " + specPaths);
+        try {
+            Files.createDirectories(outputDirPath);
 
-		try {
-			Files.createDirectories(outputDirPath);
+            final Processor processor = new Processor(true);
 
-			Processor processor = new Processor(true);
+            final XQueryCompiler xqueryCompiler = processor.newXQueryCompiler();
+            xqueryCompiler.setBaseURI(getProject().getBasedir().toURI());
 
-			XQueryCompiler xqueryCompiler = processor.newXQueryCompiler();
-			xqueryCompiler.setBaseURI(getProject().getBasedir().toURI());
+            final XQueryExecutable xqueryExecutable = xqueryCompiler
+                    .compile(getClass().getResourceAsStream("generate-specs-index.xql"));
+            final XQueryEvaluator xqueryEvaluator = xqueryExecutable.load();
 
-			XQueryExecutable xqueryExecutable = xqueryCompiler
-					.compile(getClass().getResourceAsStream("generate-specs-index.xql"));
-			XQueryEvaluator xqueryEvaluator = xqueryExecutable.load();
+            xqueryEvaluator.setExternalVariable(new QName("spec-file-paths"),
+                    new XdmAtomicValue(specPaths.stream().map(Object::toString).collect(Collectors.joining(","))));
 
-			xqueryEvaluator.setExternalVariable(new QName("spec-file-paths"),
-					new XdmAtomicValue(specPaths.stream().map(Object::toString).collect(Collectors.joining(","))));
+            xqueryEvaluator.setSource(new SAXSource(new InputSource(getClass().getResourceAsStream("empty.xml"))));
 
-			xqueryEvaluator.setSource(new SAXSource(new InputSource(getClass().getResourceAsStream("empty.xml"))));
+            final XdmValue result = xqueryEvaluator.evaluate();
 
-			XdmValue result = xqueryEvaluator.evaluate();
-
-			Serializer out = processor.newSerializer();
-			out.setOutputProperty(Serializer.Property.METHOD, "xml");
-			out.setOutputProperty(Serializer.Property.INDENT, "yes");
-			out.setOutputProperty(Serializer.Property.OMIT_XML_DECLARATION, "yes");
-			out.setOutputStream(new FileOutputStream(outputFilePath.toFile()));
-			processor.writeXdmValue(result, out);
-
-		} catch (SaxonApiException | IOException e) {
-			e.printStackTrace();
-		}
-	}
+            final Serializer out = processor.newSerializer();
+            out.setOutputProperty(Serializer.Property.METHOD, "xml");
+            out.setOutputProperty(Serializer.Property.INDENT, "yes");
+            out.setOutputProperty(Serializer.Property.OMIT_XML_DECLARATION, "yes");
+            out.setOutputStream(new FileOutputStream(outputFilePath.toFile()));
+            processor.writeXdmValue(result, out);
+        } catch (final SaxonApiException | IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
