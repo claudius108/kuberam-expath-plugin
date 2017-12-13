@@ -4,7 +4,7 @@
 	xmlns:pkg="http://expath.org/ns/pkg" xmlns:exist-pkg="http://exist-db.org/ns/expath-pkg"
 	exclude-result-prefixes="pkg exist-pkg" version="2.0">
 
-	<xsl:output method="xml" />
+	<xsl:output method="xml" indent="yes" omit-xml-declaration="no" />
 
 	<xsl:param name="package-dir" as="xs:anyURI"/>
 	<xsl:variable name="package-type" select="/*/pkg:type" />
