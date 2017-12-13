@@ -234,7 +234,7 @@ public class MakeXarMojo extends KuberamAbstractMojo {
 			XsltExecutable exp = comp.compile(new StreamSource(this.getClass()
 					.getResource("/ro/kuberam/maven/plugins/expath/generate-descriptors.xsl").toString()));
 			XdmNode source = proc.newDocumentBuilder().build(new StreamSource(filteredDescriptor));
-			Serializer out = new Serializer();
+			Serializer out = proc.newSerializer();
 			out.setOutputProperty(Serializer.Property.METHOD, "xml");
 			out.setOutputProperty(Serializer.Property.INDENT, "yes");
 			out.setOutputFile(new File("output.xml"));

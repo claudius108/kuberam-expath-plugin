@@ -95,7 +95,6 @@ public class GenerateSpecsIndexMojo extends KuberamAbstractMojo {
 
 			XQueryCompiler xqueryCompiler = processor.newXQueryCompiler();
 			xqueryCompiler.setBaseURI(getProject().getBasedir().toURI());
-			xqueryCompiler.setLanguageVersion("3.1");
 
 			XQueryExecutable xqueryExecutable = xqueryCompiler
 					.compile(getClass().getResourceAsStream("generate-specs-index.xql"));
@@ -108,7 +107,7 @@ public class GenerateSpecsIndexMojo extends KuberamAbstractMojo {
 
 			XdmValue result = xqueryEvaluator.evaluate();
 
-			Serializer out = new Serializer();
+			Serializer out = processor.newSerializer();
 			out.setOutputProperty(Serializer.Property.METHOD, "xml");
 			out.setOutputProperty(Serializer.Property.INDENT, "yes");
 			out.setOutputProperty(Serializer.Property.OMIT_XML_DECLARATION, "yes");
