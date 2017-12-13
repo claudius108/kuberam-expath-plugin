@@ -3,6 +3,7 @@ package ro.kuberam.maven.plugins.expath.mojos;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.nio.file.DirectoryStream;
@@ -104,10 +105,8 @@ public class MakeXarMojo extends KuberamAbstractMojo {
         final File filteredDescriptor = Paths.get(archiveTmpDirectoryPath, assemblyDescriptorName).toFile();
 
         // get the execution configuration
-        final FileReader fileReader;
         final DescriptorConfiguration executionConfig;
-        try {
-            fileReader = new FileReader(filteredDescriptor);
+        try(final Reader fileReader = new FileReader(filteredDescriptor)) {
             executionConfig = new DescriptorConfiguration(Xpp3DomBuilder.build(fileReader));
         } catch (Exception e) {
             throw new MojoExecutionException(e.getMessage());
