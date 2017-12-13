@@ -35,7 +35,6 @@ import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
 
 import net.sf.saxon.s9api.Processor;
-import net.sf.saxon.s9api.QName;
 import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.Serializer;
 import net.sf.saxon.s9api.XdmAtomicValue;
@@ -43,12 +42,11 @@ import net.sf.saxon.s9api.XdmNode;
 import net.sf.saxon.s9api.XsltCompiler;
 import net.sf.saxon.s9api.XsltExecutable;
 import net.sf.saxon.s9api.XsltTransformer;
-import ro.kuberam.maven.plugins.expath.ExpathFileSet;
-import ro.kuberam.maven.plugins.expath.ExpathXquerySet;
-import ro.kuberam.maven.plugins.expath.ExpathDependencySet;
-import ro.kuberam.maven.plugins.expath.DescriptorConfiguration;
+import ro.kuberam.maven.plugins.expath.*;
 import ro.kuberam.maven.plugins.mojos.KuberamAbstractMojo;
-import ro.kuberam.maven.plugins.mojos.NameValuePair;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static ro.kuberam.maven.plugins.expath.PackageConstants.*;
 
 /**
  * Assembles a package. <br>
@@ -72,8 +70,14 @@ public class MakeXarMojo extends KuberamAbstractMojo {
     @Component
     private RepositorySystem repoSystem;
 
-    private static String componentsTemplateFileContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-            + "<package xmlns=\"http://exist-db.org/ns/expath-pkg\">${components}</package>";
+    private static final String componentsTemplateFileContent = new XmlStringBuilder()
+            .startDocument()
+            .xmlDeclaration("1.0", UTF_8)
+            .startElement(PACKAGE_ELEM_NAME)
+            .text("${components}")
+            .endElement(PACKAGE_ELEM_NAME)
+            .endDocument()
+            .build();
 
     public void execute() throws MojoExecutionException, MojoFailureException {
 
@@ -87,7 +91,6 @@ public class MakeXarMojo extends KuberamAbstractMojo {
         final String outputDirectoryPath = outputDir.getAbsolutePath();
         final String assemblyDescriptorName = descriptor.getName();
         final String archiveTmpDirectoryPath = projectBuildDirectory + File.separator + "make-xar-tmp";
-        final StringBuilder components = new StringBuilder();
         final Path descriptorsDirectoryPath = Paths.get(outputDirectoryPath, "expath-descriptors-" + UUID.randomUUID());
         getLog().info("descriptorsDirectoryPath: " + descriptorsDirectoryPath);
 
@@ -120,6 +123,10 @@ public class MakeXarMojo extends KuberamAbstractMojo {
         zipArchiver.setCompress(true);
         zipArchiver.setDestFile(Paths.get(outputDirectoryPath, finalName + ".xar").toFile());
         zipArchiver.setForced(true);
+
+        final XmlStringBuilder components = new XmlStringBuilder()
+                .startDocument()
+                .startElement(CONTENTS_ELEM_NAME);
 
         // process the maven type dependencies
         for (int i = 0, il = dependencySets.size(); i < il; i++) {
@@ -176,14 +183,25 @@ public class MakeXarMojo extends KuberamAbstractMojo {
             // collect metadata about module's java main class for exist.xml
             if (i == 0 && artifactIdentifier.contains(":jar:")) {
                 components
-                        .append("<resource><public-uri>http://exist-db.org/ns/expath-pkg/module-main-class</public-uri><file>")
-                        .append(getMainClass(artifactFileAbsolutePath).get(0))
-                        .append("</file></resource>");
+                        .startElement(RESOURCE_ELEM_NAME)
+                            .startElement(PUBLIC_URI_ELEM_NAME)
+                            .text(EXPATH_PKG_MODULE_MAIN_CLASS_NS)
+                            .endElement(PUBLIC_URI_ELEM_NAME)
 
-                components
-                        .append("<resource><public-uri>http://exist-db.org/ns/expath-pkg/module-namespace</public-uri><file>")
-                        .append(getMainClass(artifactFileAbsolutePath).get(1))
-                        .append("</file></resource>");
+                            .startElement(FILE_ELEM_NAME)
+                            .text(getMainClass(artifactFileAbsolutePath).get(0))
+                            .endElement(FILE_ELEM_NAME)
+                        .endElement(RESOURCE_ELEM_NAME)
+
+                        .startElement(RESOURCE_ELEM_NAME)
+                            .startElement(PUBLIC_URI_ELEM_NAME)
+                            .text(EXPATH_PKG_MODULE_NAMESPACE_NS)
+                            .endElement(PUBLIC_URI_ELEM_NAME)
+
+                            .startElement(FILE_ELEM_NAME)
+                            .text(getMainClass(artifactFileAbsolutePath).get(1))
+                            .endElement(FILE_ELEM_NAME)
+                        .endElement(RESOURCE_ELEM_NAME);
             }
         }
 
@@ -196,11 +214,15 @@ public class MakeXarMojo extends KuberamAbstractMojo {
 
             for (final String include : xquerySet.getIncludes()) {
                 components
-                        .append("<xquery><namespace>")
-                        .append(namespace)
-                        .append("</namespace><file>")
-                        .append(include)
-                        .append("</file></xquery>");
+                        .startElement(XQUERY_ELEM_NAME)
+                            .startElement(NAMESPACE_ELEM_NAME)
+                            .text(namespace)
+                            .endElement(NAMESPACE_ELEM_NAME)
+
+                            .startElement(FILE_ELEM_NAME)
+                            .text(include)
+                            .endElement(FILE_ELEM_NAME)
+                        .endElement(XQUERY_ELEM_NAME);
             }
         }
 
@@ -218,20 +240,26 @@ public class MakeXarMojo extends KuberamAbstractMojo {
             // resource files
             if (entryPath.endsWith(".jar")) {
                 components
-                        .append("<resource><public-uri>")
-                        .append(moduleNamespace)
-                        .append("</public-uri><file>")
-                        .append(entryPath)
-                        .append("</file></resource>");
+                        .startElement(RESOURCE_ELEM_NAME)
+                            .startElement(PUBLIC_URI_ELEM_NAME)
+                            .text(moduleNamespace)
+                            .endElement(PUBLIC_URI_ELEM_NAME)
+
+                            .startElement(FILE_ELEM_NAME)
+                            .text(entryPath)
+                            .endElement(FILE_ELEM_NAME)
+                        .endElement(RESOURCE_ELEM_NAME);
             }
         }
 
-        project.getModel().addProperty("components", components.toString());
+        final String componentsString = unwrap(components.endElement(CONTENTS_ELEM_NAME).endDocument().build());
+
+        project.getModel().addProperty("components", componentsString);
 
         // create and filter the components descriptor
-        final File componentsTemplateFile = Paths.get(archiveTmpDirectoryPath, "components.xml").toFile();
+        final File componentsTemplateFile = Paths.get(archiveTmpDirectoryPath, COMPONENTS_FILENAME).toFile();
         try {
-            FileUtils.fileWrite(componentsTemplateFile, "UTF-8", componentsTemplateFileContent);
+            FileUtils.fileWrite(componentsTemplateFile, UTF_8.displayName(), componentsTemplateFileContent);
         } catch (final IOException e2) {
             e2.printStackTrace();
         }
@@ -253,7 +281,7 @@ public class MakeXarMojo extends KuberamAbstractMojo {
             transformer.setDestination(out);
             transformer.setBaseOutputURI(descriptorsDirectoryPath.toUri().toString());
 
-            transformer.setParameter(new QName("package-dir"), new XdmAtomicValue(descriptorsDirectoryPath.toUri()));
+            transformer.setParameter(new net.sf.saxon.s9api.QName("package-dir"), new XdmAtomicValue(descriptorsDirectoryPath.toUri()));
 
             transformer.transform();
         } catch (final SaxonApiException e) {
@@ -282,6 +310,18 @@ public class MakeXarMojo extends KuberamAbstractMojo {
         }
 
         project.getModel().addProperty("components", "");
+    }
+
+    /**
+     * just removes the outer container element of some xml
+     */
+    private String unwrap(final String xml) {
+        if(xml == null) {
+            return null;
+        }
+
+        final String unwrapped = xml.replaceAll("^<[^>]+>(.*)", "$1").replaceAll("(.*)</[^>]+>$", "$1");
+        return unwrapped;
     }
 
     private static List<String> getMainClass(final String firstDependencyAbsolutePath) {
