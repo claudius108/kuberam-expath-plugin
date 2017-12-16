@@ -135,17 +135,17 @@
 					</execution>
 				</executions>
 			</plugin>
-<!-- 			<plugin> -->
-<!-- 				<artifactId>maven-site-plugin</artifactId> -->
-<!-- 				<version>3.3</version> -->
-<!-- 				<dependencies> -->
-<!-- 					<dependency> -->
-<!-- 						<groupId>org.apache.maven.doxia</groupId> -->
-<!-- 						<artifactId>doxia-module-apt</artifactId> -->
-<!-- 						<version>1.4</version> -->
-<!-- 					</dependency> -->
-<!-- 				</dependencies> -->
-<!-- 			</plugin> -->
+			<!-- <plugin> -->
+			<!-- <artifactId>maven-site-plugin</artifactId> -->
+			<!-- <version>3.3</version> -->
+			<!-- <dependencies> -->
+			<!-- <dependency> -->
+			<!-- <groupId>org.apache.maven.doxia</groupId> -->
+			<!-- <artifactId>doxia-module-apt</artifactId> -->
+			<!-- <version>1.4</version> -->
+			<!-- </dependency> -->
+			<!-- </dependencies> -->
+			<!-- </plugin> -->
 		</plugins>
 	</build>
 
@@ -166,6 +166,16 @@
 			<artifactId>aether-api</artifactId>
 			<version>${aether.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.maven.shared</groupId>
+			<artifactId>maven-filtering</artifactId>
+			<version>3.1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.plexus</groupId>
+			<artifactId>plexus-archiver</artifactId>
+			<version>3.5</version>
+		</dependency>		
 		<!-- annotations -->
 		<dependency>
 			<groupId>org.apache.maven.plugin-tools</groupId>
@@ -184,11 +194,6 @@
 			<artifactId>mockito-all</artifactId>
 			<version>2.0.2-beta</version>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>ro.kuberam.maven.plugins</groupId>
-			<artifactId>abstract</artifactId>
-			<version>0.1.5</version>
 		</dependency>
 		<!-- test -->
 		<dependency>
@@ -222,10 +227,9 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>ro.kuberam.maven.plugins</groupId>
-			<artifactId>abstract</artifactId>
-			<version>0.1.5</version>
-			<type>test-jar</type>
+			<groupId>org.eclipse.aether</groupId>
+			<artifactId>aether-connector-basic</artifactId>
+			<version>${aether.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
