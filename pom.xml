@@ -5,7 +5,7 @@
 
 	<groupId>ro.kuberam.maven.plugins</groupId>
 	<artifactId>kuberam-expath-plugin</artifactId>
-	<version>0.5.1</version>
+	<version>0.5.2</version>
 	<packaging>maven-plugin</packaging>
 	<name>kuberam expath plugin</name>
 	<description>Plugin for EXPath related functionality</description>
@@ -44,6 +44,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.version>3.3.3</maven.version>

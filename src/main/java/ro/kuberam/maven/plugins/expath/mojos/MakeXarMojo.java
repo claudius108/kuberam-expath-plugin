@@ -326,7 +326,9 @@ public class MakeXarMojo extends AbstractMojo {
 					new XdmAtomicValue(descriptorsDirectoryPath.toUri()));
 
 			transformer.transform();
-		} catch (final SaxonApiException e) {
+
+			Files.delete(descriptorsDirectoryPath.resolve("components.xml"));
+		} catch (final SaxonApiException | IOException e) {
 			e.printStackTrace();
 		}
 		// add the expath descriptors
