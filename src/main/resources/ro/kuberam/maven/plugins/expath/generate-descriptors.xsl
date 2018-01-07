@@ -146,7 +146,17 @@
 					<permissions user="{$permissions/@user}" password="{$permissions/@password}"
 						group="{$permissions/@group}" mode="{$permissions/@mode}" />
 				</xsl:if>
-				<xsl:if test="/*/pkg:deployed">
+				<xsl:if test="/*/pkg:note">
+                    <note>
+                        <xsl:value-of select="/*/pkg:note" />
+                    </note>
+                </xsl:if>
+                <xsl:if test="/*/pkg:changelog">
+                    <changelog>
+                        <xsl:copy-of select="/*/pkg:changelog/node()"/>
+                    </changelog>
+                </xsl:if>
+                <xsl:if test="/*/pkg:deployed">
 					<deployed>
 						<xsl:value-of select="/*/pkg:deployed" />
 					</deployed>
