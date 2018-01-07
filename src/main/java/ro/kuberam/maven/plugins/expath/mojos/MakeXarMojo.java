@@ -1,22 +1,6 @@
 package ro.kuberam.maven.plugins.expath.mojos;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.net.JarURLConnection;
-import java.net.URL;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.jar.Attributes;
-
-import javax.xml.transform.stream.StreamSource;
-
+import net.sf.saxon.s9api.*;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -41,16 +25,23 @@ import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
-
-import net.sf.saxon.s9api.Processor;
-import net.sf.saxon.s9api.SaxonApiException;
-import net.sf.saxon.s9api.Serializer;
-import net.sf.saxon.s9api.XdmAtomicValue;
-import net.sf.saxon.s9api.XdmNode;
-import net.sf.saxon.s9api.XsltCompiler;
-import net.sf.saxon.s9api.XsltExecutable;
-import net.sf.saxon.s9api.XsltTransformer;
 import ro.kuberam.maven.plugins.expath.*;
+
+import javax.xml.transform.stream.StreamSource;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.net.JarURLConnection;
+import java.net.URL;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.jar.Attributes;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static ro.kuberam.maven.plugins.expath.PackageConstants.*;
@@ -121,7 +112,7 @@ public class MakeXarMojo extends AbstractMojo {
 			.xmlDeclaration("1.0", UTF_8).startElement(PACKAGE_ELEM_NAME).text("${components}")
 			.endElement(PACKAGE_ELEM_NAME).endDocument().build();
 
-	public void setProject(MavenProject project) {
+	public void setProject(final MavenProject project) {
 		this.project = project;
 	}
 
@@ -129,15 +120,15 @@ public class MakeXarMojo extends AbstractMojo {
 		return project;
 	}
 
-	public void setMavenResourcesFiltering(MavenResourcesFiltering mavenResourcesFiltering) {
+	public void setMavenResourcesFiltering(final MavenResourcesFiltering mavenResourcesFiltering) {
 		this.mavenResourcesFiltering = mavenResourcesFiltering;
 	}
 
-	public void setSession(MavenSession session) {
+	public void setSession(final MavenSession session) {
 		this.session = session;
 	}
 
-	public void setRepoSession(RepositorySystemSession repoSession) {
+	public void setRepoSession(final RepositorySystemSession repoSession) {
 		this.repoSession = repoSession;
 	}
 
@@ -170,7 +161,7 @@ public class MakeXarMojo extends AbstractMojo {
 		final DescriptorConfiguration executionConfig;
 		try (final Reader fileReader = new FileReader(filteredDescriptor)) {
 			executionConfig = new DescriptorConfiguration(Xpp3DomBuilder.build(fileReader));
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw new MojoExecutionException(e.getMessage());
 		}
 
@@ -364,8 +355,7 @@ public class MakeXarMojo extends AbstractMojo {
 			return null;
 		}
 
-		final String unwrapped = xml.replaceAll("^<[^>]+>(.*)", "$1").replaceAll("(.*)</[^>]+>$", "$1");
-		return unwrapped;
+		return xml.replaceAll("^<[^>]+>(.*)", "$1").replaceAll("(.*)</[^>]+>$", "$1");
 	}
 
 	private static List<String> getMainClass(final String firstDependencyAbsolutePath) {

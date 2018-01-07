@@ -28,13 +28,13 @@ public class MakeXar extends AbstractMojoTestCase {
         //executeMojo("plugin-config.xml");
     }
 
-    private MakeXarMojo getMojo(String pluginXml) throws Exception {
+    private MakeXarMojo getMojo(final String pluginXml) throws Exception {
         return (MakeXarMojo) lookupMojo("make-xar-new", new File(getBasedir()
                 + "/src/test/resources/ro/kuberam/maven/xarPlugin/tests/" + pluginXml));
     }
 
     private MakeXarMojo executeMojo(final String pluginXml) throws Exception {
-        MakeXarMojo mojo = getMojo(pluginXml);
+        final MakeXarMojo mojo = getMojo(pluginXml);
 
         System.out.println("mojo.getClass(): " + mojo.getClass());
 

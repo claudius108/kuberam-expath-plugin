@@ -1,17 +1,16 @@
 package ro.kuberam.maven.plugins.expath.mojos;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.codehaus.plexus.util.FileUtils;
-
 import ro.kuberam.maven.plugins.expath.Utils;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Generates the basic files needed for the library implementing the EXPath
@@ -92,7 +91,7 @@ public class GenerateLibBasicsMojo extends AbstractMojo {
 
 		FileUtils.mkdir(libDir.getAbsolutePath());
 
-		final Map<String, String> parameters = new HashMap<String, String>();
+		final Map<String, String> parameters = new HashMap<>();
 		parameters.put("javaPackageName", javaPackageName);
 		parameters.put("libDirPath", libDir.getAbsolutePath());
 		parameters.put("libUrl", libUrl);

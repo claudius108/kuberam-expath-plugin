@@ -19,7 +19,7 @@ public class MakeXarMojoTest extends KuberamAbstractMojoTestBase {
     @Test
     public void testApplicationXar() throws Exception {
 
-        String a = "/";
+        final String a = "/";
 
         System.out.println("result: " + a.replaceAll("^/", ""));
         final MakeXarMojo mojo = this.mojo();
@@ -33,7 +33,7 @@ public class MakeXarMojoTest extends KuberamAbstractMojoTestBase {
         final MakeXarMojo mojo = new MakeXarMojo();
         setVariableValueToObject(mojo, "projectBuildDirectory", new File(projectBuildDirectory));
         mojo.setProject(mock(MavenProject.class));
-        MavenProject project = mojo.getProject();
+        final MavenProject project = mojo.getProject();
         mojo.setMavenResourcesFiltering(mock(MavenResourcesFiltering.class));
         mojo.setSession(mock(MavenSession.class));
         mojo.setRepoSession(newSession(newRepositorySystem()));

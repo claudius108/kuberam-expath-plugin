@@ -1,11 +1,11 @@
 package ro.kuberam.maven.plugins.expath;
 
+import org.codehaus.plexus.util.xml.Xpp3Dom;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 public class DescriptorConfiguration extends Xpp3Dom {
 

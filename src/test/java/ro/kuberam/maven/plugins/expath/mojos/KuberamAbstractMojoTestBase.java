@@ -23,7 +23,7 @@ public class KuberamAbstractMojoTestBase extends PlexusTestCase {
 	protected static String projectBuildDirectory = baseDir + File.separator + "target";
 
 	protected static RepositorySystem newRepositorySystem() {
-		DefaultServiceLocator locator = MavenRepositorySystemUtils.newServiceLocator();
+		final DefaultServiceLocator locator = MavenRepositorySystemUtils.newServiceLocator();
 		locator.addService(RepositoryConnectorFactory.class, BasicRepositoryConnectorFactory.class);
 		locator.addService(TransporterFactory.class, FileTransporterFactory.class);
 		locator.addService(TransporterFactory.class, HttpTransporterFactory.class);
@@ -31,17 +31,17 @@ public class KuberamAbstractMojoTestBase extends PlexusTestCase {
 		return locator.getService(RepositorySystem.class);
 	}
 
-	protected static RepositorySystemSession newSession(RepositorySystem system) {
-		DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
+	protected static RepositorySystemSession newSession(final RepositorySystem system) {
+		final DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
 
-		LocalRepository localRepo = new LocalRepository(projectBuildDirectory + File.separator + "local-repo");
+		final LocalRepository localRepo = new LocalRepository(projectBuildDirectory + File.separator + "local-repo");
 		session.setLocalRepositoryManager(system.newLocalRepositoryManager(session, localRepo));
 
 		return session;
 	}
 
-	protected void setVariableValueToObject(Object object, String variable, Object value) throws IllegalAccessException {
-		Field field = ReflectionUtils.getFieldByNameIncludingSuperclasses(variable, object.getClass());
+	protected void setVariableValueToObject(final Object object, final String variable, final Object value) throws IllegalAccessException {
+		final Field field = ReflectionUtils.getFieldByNameIncludingSuperclasses(variable, object.getClass());
 		field.setAccessible(true);
 		field.set(object, value);
 	}

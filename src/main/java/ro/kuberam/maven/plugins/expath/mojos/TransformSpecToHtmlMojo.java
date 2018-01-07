@@ -1,9 +1,5 @@
 package ro.kuberam.maven.plugins.expath.mojos;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -12,8 +8,11 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
 import org.eclipse.aether.RepositorySystemSession;
-
 import ro.kuberam.maven.plugins.expath.Utils;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Transforms an EXPath specification to HTML format. <br>
@@ -61,11 +60,11 @@ public class TransformSpecToHtmlMojo extends AbstractMojo {
 	@Parameter(defaultValue = "")
 	private String googleAnalyticsAccountId;
 
-	public void setProject(MavenProject project) {
+	public void setProject(final MavenProject project) {
 		this.project = project;
 	}
 
-	public void setRepoSession(RepositorySystemSession repoSession) {
+	public void setRepoSession(final RepositorySystemSession repoSession) {
 		this.repoSession = repoSession;
 	}
 
@@ -74,7 +73,7 @@ public class TransformSpecToHtmlMojo extends AbstractMojo {
 
 		FileUtils.mkdir(outputDir.getAbsolutePath());
 
-		final Map<String, String> parameters = new HashMap<String, String>();
+		final Map<String, String> parameters = new HashMap<>();
 		parameters.put("googleAnalyticsAccountId", googleAnalyticsAccountId);
 
 		Utils.xsltTransform(specFile,
