@@ -121,7 +121,7 @@ public class MakeXarMojo extends AbstractMojo {
 			.xmlDeclaration("1.0", UTF_8).startElement(PACKAGE_ELEM_NAME).text("${components}")
 			.endElement(PACKAGE_ELEM_NAME).endDocument().build();
 
-	public void setProject(MavenProject project) {
+	public void setProject(final MavenProject project) {
 		this.project = project;
 	}
 
@@ -129,15 +129,15 @@ public class MakeXarMojo extends AbstractMojo {
 		return project;
 	}
 
-	public void setMavenResourcesFiltering(MavenResourcesFiltering mavenResourcesFiltering) {
+	public void setMavenResourcesFiltering(final MavenResourcesFiltering mavenResourcesFiltering) {
 		this.mavenResourcesFiltering = mavenResourcesFiltering;
 	}
 
-	public void setSession(MavenSession session) {
+	public void setSession(final MavenSession session) {
 		this.session = session;
 	}
 
-	public void setRepoSession(RepositorySystemSession repoSession) {
+	public void setRepoSession(final RepositorySystemSession repoSession) {
 		this.repoSession = repoSession;
 	}
 
@@ -170,7 +170,7 @@ public class MakeXarMojo extends AbstractMojo {
 		final DescriptorConfiguration executionConfig;
 		try (final Reader fileReader = new FileReader(filteredDescriptor)) {
 			executionConfig = new DescriptorConfiguration(Xpp3DomBuilder.build(fileReader));
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw new MojoExecutionException(e.getMessage());
 		}
 
@@ -364,8 +364,7 @@ public class MakeXarMojo extends AbstractMojo {
 			return null;
 		}
 
-		final String unwrapped = xml.replaceAll("^<[^>]+>(.*)", "$1").replaceAll("(.*)</[^>]+>$", "$1");
-		return unwrapped;
+		return xml.replaceAll("^<[^>]+>(.*)", "$1").replaceAll("(.*)</[^>]+>$", "$1");
 	}
 
 	private static List<String> getMainClass(final String firstDependencyAbsolutePath) {

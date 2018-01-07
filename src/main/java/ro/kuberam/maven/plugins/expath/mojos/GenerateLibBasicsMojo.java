@@ -92,7 +92,7 @@ public class GenerateLibBasicsMojo extends AbstractMojo {
 
 		FileUtils.mkdir(libDir.getAbsolutePath());
 
-		final Map<String, String> parameters = new HashMap<String, String>();
+		final Map<String, String> parameters = new HashMap<>();
 		parameters.put("javaPackageName", javaPackageName);
 		parameters.put("libDirPath", libDir.getAbsolutePath());
 		parameters.put("libUrl", libUrl);

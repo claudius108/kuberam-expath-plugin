@@ -24,31 +24,31 @@ public class ProcessOutputDirectoryTest {
     public void testNullOutputDirectory() throws Exception {
         parentElement.removeChild(0);
 
-        String processedOutputDirectory = DescriptorConfiguration.getOutputDirectory(parentElement);
-        assertTrue(processedOutputDirectory.equals(""));
+        final String processedOutputDirectory = DescriptorConfiguration.getOutputDirectory(parentElement);
+        assertTrue(processedOutputDirectory.isEmpty());
     }
 
     @Test
     public void testEmptyOutputDirectory() throws Exception {
         outputDirectoryElement.setValue("");
 
-        String processedOutputDirectory = DescriptorConfiguration.getOutputDirectory(parentElement);
-        assertTrue(processedOutputDirectory.equals(""));
+        final String processedOutputDirectory = DescriptorConfiguration.getOutputDirectory(parentElement);
+        assertTrue(processedOutputDirectory.isEmpty());
     }
 
     @Test
     public void testForwardSlashOutputDirectory() throws Exception {
         outputDirectoryElement.setValue("/");
 
-        String processedOutputDirectory = DescriptorConfiguration.getOutputDirectory(parentElement);
-        assertTrue(processedOutputDirectory.equals(""));
+        final String processedOutputDirectory = DescriptorConfiguration.getOutputDirectory(parentElement);
+        assertTrue(processedOutputDirectory.isEmpty());
     }
 
     @Test
     public void testSimpleOutputDirectory1() throws Exception {
         outputDirectoryElement.setValue("a");
 
-        String processedOutputDirectory = DescriptorConfiguration.getOutputDirectory(parentElement);
+        final String processedOutputDirectory = DescriptorConfiguration.getOutputDirectory(parentElement);
         assertTrue(processedOutputDirectory.equals("a/"));
     }
 
@@ -56,7 +56,7 @@ public class ProcessOutputDirectoryTest {
     public void testSimpleOutputDirectory2() throws Exception {
         outputDirectoryElement.setValue("/a");
 
-        String processedOutputDirectory = DescriptorConfiguration.getOutputDirectory(parentElement);
+        final String processedOutputDirectory = DescriptorConfiguration.getOutputDirectory(parentElement);
         assertTrue(processedOutputDirectory.equals("a/"));
     }
 
@@ -64,7 +64,7 @@ public class ProcessOutputDirectoryTest {
     public void testSimpleOutputDirectory3() throws Exception {
         outputDirectoryElement.setValue("/a/");
 
-        String processedOutputDirectory = DescriptorConfiguration.getOutputDirectory(parentElement);
+        final String processedOutputDirectory = DescriptorConfiguration.getOutputDirectory(parentElement);
         assertTrue(processedOutputDirectory.equals("a/"));
     }
 
@@ -72,7 +72,7 @@ public class ProcessOutputDirectoryTest {
     public void testComplexOutputDirectory1() throws Exception {
         outputDirectoryElement.setValue("a/b");
 
-        String processedOutputDirectory = DescriptorConfiguration.getOutputDirectory(parentElement);
+        final String processedOutputDirectory = DescriptorConfiguration.getOutputDirectory(parentElement);
         assertTrue(processedOutputDirectory.equals("a/b/"));
     }
 
@@ -80,7 +80,7 @@ public class ProcessOutputDirectoryTest {
     public void testComplexOutputDirectory2() throws Exception {
         outputDirectoryElement.setValue("/a/b");
 
-        String processedOutputDirectory = DescriptorConfiguration.getOutputDirectory(parentElement);
+        final String processedOutputDirectory = DescriptorConfiguration.getOutputDirectory(parentElement);
         assertTrue(processedOutputDirectory.equals("a/b/"));
     }
 
@@ -88,7 +88,7 @@ public class ProcessOutputDirectoryTest {
     public void testComplexOutputDirectory3() throws Exception {
         outputDirectoryElement.setValue("/a/b/");
 
-        String processedOutputDirectory = DescriptorConfiguration.getOutputDirectory(parentElement);
+        final String processedOutputDirectory = DescriptorConfiguration.getOutputDirectory(parentElement);
         assertTrue(processedOutputDirectory.equals("a/b/"));
     }
 

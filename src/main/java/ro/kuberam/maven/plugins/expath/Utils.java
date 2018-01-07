@@ -24,38 +24,38 @@ import org.apache.maven.shared.filtering.MavenResourcesFiltering;
 
 public class Utils {
 
-	public static void xsltTransform(File sourceFile, String xsltUrl, String resultDir, Map<String, String> parameters)
+	public static void xsltTransform(final File sourceFile, final String xsltUrl, final String resultDir, final Map<String, String> parameters)
 			throws MojoExecutionException, MojoFailureException {
 		System.setProperty("javax.xml.transform.TransformerFactory", "net.sf.saxon.TransformerFactoryImpl");
 
-		TransformerFactory tFactory = TransformerFactory.newInstance();
+		final TransformerFactory tFactory = TransformerFactory.newInstance();
 		try {
-			Transformer transformer = tFactory.newTransformer(new StreamSource(xsltUrl));
+			final Transformer transformer = tFactory.newTransformer(new StreamSource(xsltUrl));
 
-			for (Entry<String, String> parameter : parameters.entrySet()) {
+			for (final Entry<String, String> parameter : parameters.entrySet()) {
 				transformer.setParameter(parameter.getKey(), parameter.getValue());
 			}
 
 			transformer.transform(new StreamSource(sourceFile), new StreamResult(new File(resultDir)));
-		} catch (TransformerException ex) {
+		} catch (final TransformerException ex) {
 			throw new MojoFailureException("An error occurred whilst transforming: " + sourceFile.getAbsolutePath()
 					+ " with: " + xsltUrl + " using parameters [" + parameters + "]", ex);
 		}
 	}
 
-	public static void filterResource(MavenProject project, MavenSession session,
-			MavenResourcesFiltering mavenResourcesFiltering, String encoding, String directory, String include,
-			String targetPath, File outputDirectory) {
-		List<String> filters = Arrays.asList();
-		List<String> defaultNonFilteredFileExtensions = Arrays.asList("jpg", "jpeg", "gif", "bmp", "png");
+	public static void filterResource(final MavenProject project, final MavenSession session,
+                                      final MavenResourcesFiltering mavenResourcesFiltering, final String encoding, final String directory, final String include,
+                                      final String targetPath, final File outputDirectory) {
+		final List<String> filters = Collections.emptyList();
+		final List<String> defaultNonFilteredFileExtensions = Arrays.asList("jpg", "jpeg", "gif", "bmp", "png");
 
-		Resource resource = new Resource();
+		final Resource resource = new Resource();
 		resource.setDirectory(directory);
 		resource.addInclude(include);
 		resource.setFiltering(true);
 		resource.setTargetPath(targetPath);
 
-		MavenResourcesExecution mavenResourcesExecution = new MavenResourcesExecution(
+		final MavenResourcesExecution mavenResourcesExecution = new MavenResourcesExecution(
 				Collections.singletonList(resource), outputDirectory, project, encoding, filters,
 				defaultNonFilteredFileExtensions, session);
 		System.out.println("mavenResourcesExecution: " + mavenResourcesExecution);
@@ -65,7 +65,7 @@ public class Utils {
 
 		try {
 			mavenResourcesFiltering.filterResources(mavenResourcesExecution);
-		} catch (MavenFilteringException e) {
+		} catch (final MavenFilteringException e) {
 			e.printStackTrace();
 		}
 
