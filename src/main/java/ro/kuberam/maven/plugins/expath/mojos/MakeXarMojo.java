@@ -1,6 +1,33 @@
 package ro.kuberam.maven.plugins.expath.mojos;
 
-import net.sf.saxon.s9api.*;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static ro.kuberam.maven.plugins.expath.PackageConstants.COMPONENTS_FILENAME;
+import static ro.kuberam.maven.plugins.expath.PackageConstants.CONTENTS_ELEM_NAME;
+import static ro.kuberam.maven.plugins.expath.PackageConstants.EXPATH_PKG_MODULE_MAIN_CLASS_NS;
+import static ro.kuberam.maven.plugins.expath.PackageConstants.EXPATH_PKG_MODULE_NAMESPACE_NS;
+import static ro.kuberam.maven.plugins.expath.PackageConstants.FILE_ELEM_NAME;
+import static ro.kuberam.maven.plugins.expath.PackageConstants.NAMESPACE_ELEM_NAME;
+import static ro.kuberam.maven.plugins.expath.PackageConstants.PACKAGE_ELEM_NAME;
+import static ro.kuberam.maven.plugins.expath.PackageConstants.PUBLIC_URI_ELEM_NAME;
+import static ro.kuberam.maven.plugins.expath.PackageConstants.RESOURCE_ELEM_NAME;
+import static ro.kuberam.maven.plugins.expath.PackageConstants.XQUERY_ELEM_NAME;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.net.JarURLConnection;
+import java.net.URL;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.jar.Attributes;
+
+import javax.xml.transform.stream.StreamSource;
+
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -25,26 +52,21 @@ import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
-import ro.kuberam.maven.plugins.expath.*;
 
-import javax.xml.transform.stream.StreamSource;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.net.JarURLConnection;
-import java.net.URL;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.jar.Attributes;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static ro.kuberam.maven.plugins.expath.PackageConstants.*;
+import net.sf.saxon.s9api.Processor;
+import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.Serializer;
+import net.sf.saxon.s9api.XdmAtomicValue;
+import net.sf.saxon.s9api.XdmNode;
+import net.sf.saxon.s9api.XsltCompiler;
+import net.sf.saxon.s9api.XsltExecutable;
+import net.sf.saxon.s9api.XsltTransformer;
+import ro.kuberam.maven.plugins.expath.DescriptorConfiguration;
+import ro.kuberam.maven.plugins.expath.ExpathDependencySet;
+import ro.kuberam.maven.plugins.expath.ExpathFileSet;
+import ro.kuberam.maven.plugins.expath.ExpathXquerySet;
+import ro.kuberam.maven.plugins.expath.Utils;
+import ro.kuberam.maven.plugins.expath.XmlStringBuilder;
 
 /**
  * Assembles a package. <br>
@@ -144,7 +166,7 @@ public class MakeXarMojo extends AbstractMojo {
 		final String outputDirectoryPath = outputDir.getAbsolutePath();
 		final String assemblyDescriptorName = descriptor.getName();
 		final String archiveTmpDirectoryPath = projectBuildDirectory + File.separator + "make-xar-tmp";
-		final Path descriptorsDirectoryPath = Paths.get(outputDirectoryPath, "expath-descriptors-" + UUID.randomUUID());
+		final Path descriptorsDirectoryPath = Paths.get(outputDirectoryPath, "expath-descriptors");
 		getLog().info("descriptorsDirectoryPath: " + descriptorsDirectoryPath);
 
 		// Plugin xarPlugin =
