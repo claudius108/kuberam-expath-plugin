@@ -1,6 +1,8 @@
 package ro.kuberam.maven.plugins.expath.mojos;
 
 import net.sf.saxon.s9api.*;
+import ro.kuberam.maven.plugins.expath.Utils;
+
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -16,11 +18,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -79,41 +84,23 @@ public class GenerateSpecsIndexMojo extends AbstractMojo {
 		}
 		getLog().debug("specPaths: " + specPaths);
 
+		InputStream xml = null;
+		InputStream xquery = null;
+		Map<QName, XdmAtomicValue> parameters = new HashMap<QName, XdmAtomicValue>();
+		parameters.put(new QName("spec-file-paths"),
+				new XdmAtomicValue(specPaths.stream().map(Object::toString).collect(Collectors.joining(","))));
+		URI baseURI = null;
+
 		try {
+			xml = getClass().getResourceAsStream("empty.xml");
+			xquery = getClass().getResourceAsStream("generate-specs-index.xql");
+			baseURI = project.getBasedir().toURI();
 			Files.createDirectories(outputDirPath);
-
-			final Processor processor = new Processor(true);
-
-			final XQueryCompiler xqueryCompiler = processor.newXQueryCompiler();
-			xqueryCompiler.setBaseURI(project.getBasedir().toURI());
-
-			final XQueryExecutable xqueryExecutable;
-			try (final InputStream is = getClass().getResourceAsStream("generate-specs-index.xql")) {
-				xqueryExecutable = xqueryCompiler.compile(is);
-			}
-
-			final XQueryEvaluator xqueryEvaluator = xqueryExecutable.load();
-
-			xqueryEvaluator.setExternalVariable(new QName("spec-file-paths"),
-					new XdmAtomicValue(specPaths.stream().map(Object::toString).collect(Collectors.joining(","))));
-
-			final XdmValue result;
-			try (final InputStream is = getClass().getResourceAsStream("empty.xml")) {
-				xqueryEvaluator.setSource(new SAXSource(new InputSource(is)));
-				result = xqueryEvaluator.evaluate();
-			}
-
-			final Serializer out = processor.newSerializer();
-			out.setOutputProperty(Serializer.Property.METHOD, "xml");
-			out.setOutputProperty(Serializer.Property.INDENT, "yes");
-			out.setOutputProperty(Serializer.Property.OMIT_XML_DECLARATION, "yes");
-
-			try (final OutputStream os = Files.newOutputStream(outputFilePath)) {
-				out.setOutputStream(os);
-				processor.writeXdmValue(result, out);
-			}
-		} catch (final SaxonApiException | IOException e) {
-			e.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
 		}
+
+		Utils.xqueryTransformation(xml, xquery, baseURI, parameters, outputFilePath);
+
 	}
 }

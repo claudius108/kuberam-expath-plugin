@@ -8,23 +8,42 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.filtering.MavenFilteringException;
 import org.apache.maven.shared.filtering.MavenResourcesExecution;
 import org.apache.maven.shared.filtering.MavenResourcesFiltering;
+import org.xml.sax.InputSource;
+
+import net.sf.saxon.s9api.Processor;
+import net.sf.saxon.s9api.QName;
+import net.sf.saxon.s9api.SaxonApiException;
+import net.sf.saxon.s9api.Serializer;
+import net.sf.saxon.s9api.XQueryCompiler;
+import net.sf.saxon.s9api.XQueryEvaluator;
+import net.sf.saxon.s9api.XQueryExecutable;
+import net.sf.saxon.s9api.XdmAtomicValue;
+import net.sf.saxon.s9api.XdmValue;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 public class Utils {
 
-	public static void xsltTransform(final File sourceFile, final String xsltUrl, final String resultDir, final Map<String, String> parameters)
-			throws MojoExecutionException, MojoFailureException {
+	public static void xsltTransform(final File sourceFile, final String xsltUrl, final String resultDir,
+			final Map<String, String> parameters) throws MojoExecutionException, MojoFailureException {
 		System.setProperty("javax.xml.transform.TransformerFactory", "net.sf.saxon.TransformerFactoryImpl");
 
 		final TransformerFactory tFactory = TransformerFactory.newInstance();
@@ -42,9 +61,44 @@ public class Utils {
 		}
 	}
 
+	public static void xqueryTransformation(InputStream xml, InputStream xquery, URI baseURI,
+			Map<QName, XdmAtomicValue> parameters, Path outputFilePath) throws MojoFailureException {
+		try (InputStream xmlIs = xml;
+				InputStream xqueryIs = xquery;
+				OutputStream os = Files.newOutputStream(outputFilePath)) {
+			Processor processor = new Processor(true);
+
+			XQueryCompiler xqueryCompiler = processor.newXQueryCompiler();
+			xqueryCompiler.setBaseURI(baseURI);
+
+			XQueryExecutable xqueryExecutable = xqueryCompiler.compile(xqueryIs);
+
+			XQueryEvaluator xqueryEvaluator = xqueryExecutable.load();
+
+			for (Entry<QName, XdmAtomicValue> parameter : parameters.entrySet()) {
+				xqueryEvaluator.setExternalVariable((QName) parameter.getKey(), (XdmAtomicValue) parameter.getValue());
+			}
+
+			XdmValue result;
+			xqueryEvaluator.setSource(new SAXSource(new InputSource(xmlIs)));
+			result = xqueryEvaluator.evaluate();
+
+			Serializer out = processor.newSerializer();
+			out.setOutputProperty(Serializer.Property.METHOD, "xml");
+			out.setOutputProperty(Serializer.Property.INDENT, "yes");
+			out.setOutputProperty(Serializer.Property.OMIT_XML_DECLARATION, "yes");
+
+			out.setOutputStream(os);
+			processor.writeXdmValue(result, out);
+		} catch (SaxonApiException | IOException ex) {
+			throw new MojoFailureException("An error occurred whilst doing an xquery transformation: ", ex);
+		}
+
+	}
+
 	public static void filterResource(final MavenProject project, final MavenSession session,
-                                      final MavenResourcesFiltering mavenResourcesFiltering, final String encoding, final String directory, final String include,
-                                      final String targetPath, final File outputDirectory) {
+			final MavenResourcesFiltering mavenResourcesFiltering, final String encoding, final String directory,
+			final String include, final String targetPath, final File outputDirectory) {
 		final List<String> filters = Collections.emptyList();
 		final List<String> defaultNonFilteredFileExtensions = Arrays.asList("jpg", "jpeg", "gif", "bmp", "png");
 
