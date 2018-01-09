@@ -13,6 +13,7 @@ import static ro.kuberam.maven.plugins.expath.PackageConstants.RESOURCE_ELEM_NAM
 import static ro.kuberam.maven.plugins.expath.PackageConstants.XQUERY_ELEM_NAME;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -164,6 +165,7 @@ public class MakeXarMojo extends AbstractMojo {
 
 		// set needed variables
 		final String outputDirectoryPath = outputDir.getAbsolutePath();
+		System.out.println("outputDirectoryPath = " + outputDirectoryPath);
 		final String assemblyDescriptorName = descriptor.getName();
 		final String archiveTmpDirectoryPath = projectBuildDirectory + File.separator + "make-xar-tmp";
 		final Path descriptorsDirectoryPath = Paths.get(outputDirectoryPath, "expath-descriptors");
@@ -197,6 +199,17 @@ public class MakeXarMojo extends AbstractMojo {
 		zipArchiver.setCompress(true);
 		zipArchiver.setDestFile(Paths.get(outputDirectoryPath, finalName + ".xar").toFile());
 		zipArchiver.setForced(true);
+
+		Path existComponents = Paths.get(descriptorsDirectoryPath.toAbsolutePath().toString(), "exist-components.xml");
+		try {
+			Files.createDirectories(descriptorsDirectoryPath);
+			
+			Utils.xqueryTransformation(new FileInputStream(filteredDescriptor),
+					getClass().getResourceAsStream("generate-descriptors.xql"), project.getBasedir().toURI(), null,
+					existComponents);
+		} catch (IOException e) {
+			throw new MojoExecutionException(e.getMessage());
+		}
 
 		final XmlStringBuilder components = new XmlStringBuilder().startDocument().startElement(CONTENTS_ELEM_NAME);
 
@@ -341,6 +354,7 @@ public class MakeXarMojo extends AbstractMojo {
 			transformer.transform();
 
 			Files.delete(descriptorsDirectoryPath.resolve("components.xml"));
+			Files.delete(existComponents);
 		} catch (final SaxonApiException | IOException e) {
 			e.printStackTrace();
 		}

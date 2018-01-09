@@ -1,5 +1,26 @@
 package ro.kuberam.maven.plugins.expath;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -19,26 +40,6 @@ import net.sf.saxon.s9api.XQueryEvaluator;
 import net.sf.saxon.s9api.XQueryExecutable;
 import net.sf.saxon.s9api.XdmAtomicValue;
 import net.sf.saxon.s9api.XdmValue;
-
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.sax.SAXSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 public class Utils {
 
@@ -75,9 +76,12 @@ public class Utils {
 
 			XQueryEvaluator xqueryEvaluator = xqueryExecutable.load();
 
-			for (Entry<QName, XdmAtomicValue> parameter : parameters.entrySet()) {
-				xqueryEvaluator.setExternalVariable((QName) parameter.getKey(), (XdmAtomicValue) parameter.getValue());
-			}
+			Optional.ofNullable(parameters).ifPresent(p -> {
+				for (Entry<QName, XdmAtomicValue> parameter : p.entrySet()) {
+					xqueryEvaluator.setExternalVariable((QName) parameter.getKey(),
+							(XdmAtomicValue) parameter.getValue());
+				}
+			});
 
 			XdmValue result;
 			xqueryEvaluator.setSource(new SAXSource(new InputSource(xmlIs)));

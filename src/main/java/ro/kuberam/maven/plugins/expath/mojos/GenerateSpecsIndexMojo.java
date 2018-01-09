@@ -1,23 +1,8 @@
 package ro.kuberam.maven.plugins.expath.mojos;
 
-import net.sf.saxon.s9api.*;
-import ro.kuberam.maven.plugins.expath.Utils;
-
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.shared.model.fileset.FileSet;
-import org.apache.maven.shared.model.fileset.util.FileSetManager;
-import org.xml.sax.InputSource;
-
-import javax.xml.transform.sax.SAXSource;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -27,6 +12,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.shared.model.fileset.FileSet;
+import org.apache.maven.shared.model.fileset.util.FileSetManager;
+
+import net.sf.saxon.s9api.QName;
+import net.sf.saxon.s9api.XdmAtomicValue;
+import ro.kuberam.maven.plugins.expath.Utils;
 
 /**
  * Generates the HTML index for a set of EXPath specifications. The index will
@@ -96,8 +94,8 @@ public class GenerateSpecsIndexMojo extends AbstractMojo {
 			xquery = getClass().getResourceAsStream("generate-specs-index.xql");
 			baseURI = project.getBasedir().toURI();
 			Files.createDirectories(outputDirPath);
-		} catch (IOException e1) {
-			e1.printStackTrace();
+		} catch (IOException e) {
+			throw new MojoExecutionException(e.getMessage());
 		}
 
 		Utils.xqueryTransformation(xml, xquery, baseURI, parameters, outputFilePath);
