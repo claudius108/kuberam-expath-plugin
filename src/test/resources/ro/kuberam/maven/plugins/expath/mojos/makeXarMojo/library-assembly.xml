@@ -1,5 +1,6 @@
-<package xmlns="http://expath.org/ns/pkg" xmlns:dc="http://dublincore.org/documents/dces/" xmlns:pkg="http://cxan.org/ns/package"
-	name="${package-name}" abbrev="${package-abbrev}" version="${project.version}" spec="1.0">
+<package xmlns="http://expath.org/ns/pkg" xmlns:dc="http://dublincore.org/documents/dces/"
+	xmlns:pkg="http://cxan.org/ns/package" name="${package-name}" abbrev="${package-abbrev}"
+	version="${project.version}" spec="1.0">
 	<title>${package-title}</title>
 	<dependency processor="http://exist-db.org/" />
 	<dependency package="http://expath.org/lib/${module-prefix}" />
@@ -9,9 +10,11 @@
 	<dc:type>library</dc:type>
 	<pkg:module-prefix>${module-prefix}</pkg:module-prefix>
 	<module-namespace>${module-namespace}</module-namespace>
-	<pkg:cxan-tags>${module-prefix},expath,${package-type},exist</pkg:cxan-tags>
+	<pkg:cxan-tags>${module-prefix},expath,${package-type},exist
+	</pkg:cxan-tags>
 	<pkg:cxan-category id="libs">Libraries</pkg:cxan-category>
-	<pkg:cxan-category id="exist">eXist extensions</pkg:cxan-category>
+	<pkg:cxan-category id="exist">eXist extensions
+	</pkg:cxan-category>
 	<status xmlns="http://exist-db.org/xquery/repo">stable</status>
 	<copyright xmlns="http://exist-db.org/xquery/repo">true</copyright>
 	<target xmlns="http://exist-db.org/xquery/repo">expath-${module-prefix}</target>
@@ -40,4 +43,14 @@
 			<version>2.1</version>
 		</dependencySet>
 	</dependencySets>
+	<components>
+		<resource>
+			<public-uri>http://expath.org/ns/mongo</public-uri>
+			<file>org.exist.mongodb.xquery.MongodbModule</file>
+		</resource>
+		<resource>
+			<public-uri>http://expath.org/ns/mongo/gridfs</public-uri>
+			<file>org.exist.mongodb.xquery.GridfsModule</file>
+		</resource>
+	</components>
 </package>
