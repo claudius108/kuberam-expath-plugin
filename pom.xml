@@ -5,9 +5,9 @@
 
 	<groupId>ro.kuberam.maven.plugins</groupId>
 	<artifactId>kuberam-expath-plugin</artifactId>
-	<version>0.5.3</version>
+	<version>0.5.4</version>
 	<packaging>maven-plugin</packaging>
-	<name>kuberam expath plugin</name>
+	<name>Kuberam EXPath Plugin</name>
 	<description>Plugin for EXPath related functionality</description>
 	<url>http://kuberam.ro/maven/plugins/kuberam-expath-plugin</url>
 	<inceptionYear>2013</inceptionYear>
@@ -31,6 +31,15 @@
 			<email>claudius.teodorescu@gmail.com</email>
 		</developer>
 	</developers>
+
+	<contributors>
+		<contributor>
+			<name>Adam Retter</name>
+		</contributor>
+		<contributor>
+			<name>Dannes Wessels</name>
+		</contributor>
+	</contributors>
 
 	<scm>
 		<connection>scm:git:ssh@github.com:claudius108/kuberam-expath-plugin.git</connection>
@@ -176,7 +185,7 @@
 			<groupId>org.codehaus.plexus</groupId>
 			<artifactId>plexus-archiver</artifactId>
 			<version>3.5</version>
-		</dependency>		
+		</dependency>
 		<!-- annotations -->
 		<dependency>
 			<groupId>org.apache.maven.plugin-tools</groupId>
