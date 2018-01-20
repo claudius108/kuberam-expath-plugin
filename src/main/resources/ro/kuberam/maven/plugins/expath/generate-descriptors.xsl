@@ -28,20 +28,6 @@
 					href="{concat($package-dir, '/exist.xml')}">
 					<package xmlns="http://exist-db.org/ns/expath-pkg">
 						<xsl:copy-of select="$exist-components/*" />
-<!-- 						<xsl:variable name="module-namespace" -->
-<!-- 							select="$components//element()[preceding-sibling::*[1] = 'http://exist-db.org/ns/expath-pkg/module-namespace']" /> -->
-<!-- 						<xsl:variable name="module-main-class" -->
-<!-- 							select="$components//element()[preceding-sibling::*[1] = 'http://exist-db.org/ns/expath-pkg/module-main-class']" /> -->
-<!-- 						<xsl:if test="$module-main-class != ''"> -->
-<!-- 							<java> -->
-<!-- 								<namespace> -->
-<!-- 									<xsl:value-of select="$module-namespace" /> -->
-<!-- 								</namespace> -->
-<!-- 								<class> -->
-<!-- 									<xsl:value-of select="$module-main-class" /> -->
-<!-- 								</class> -->
-<!-- 							</java> -->
-<!-- 						</xsl:if> -->
 						<xsl:for-each select="$components/element()">
 							<xsl:choose>
 								<xsl:when test="ends-with(element()[2], '.jar')">
