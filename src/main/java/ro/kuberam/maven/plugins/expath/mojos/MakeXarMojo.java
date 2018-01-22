@@ -25,6 +25,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.jar.Attributes;
 
 import javax.xml.transform.stream.StreamSource;
@@ -80,19 +81,19 @@ import ro.kuberam.maven.plugins.expath.XmlStringBuilder;
 public class MakeXarMojo extends AbstractMojo {
 
 	@Parameter(defaultValue = "${project}", readonly = true)
-	protected MavenProject project;
+	private MavenProject project;
 
 	@Parameter(defaultValue = "${session}", readonly = true)
-	protected MavenSession session;
+	private MavenSession session;
 
 	@Component(role = MavenResourcesFiltering.class, hint = "default")
-	protected MavenResourcesFiltering mavenResourcesFiltering;
+	private MavenResourcesFiltering mavenResourcesFiltering;
 
 	/**
 	 * The output directory of the assembled distribution file.
 	 */
 	@Parameter(defaultValue = "${project.build.directory}", readonly = true)
-	protected File projectBuildDirectory;
+	private File projectBuildDirectory;
 
 	/**
 	 * The character encoding scheme to be applied when filtering resources.
@@ -104,7 +105,7 @@ public class MakeXarMojo extends AbstractMojo {
 	 * The filename of the assembled distribution file.
 	 */
 	@Parameter(defaultValue = "${project.build.finalName}", required = true)
-	protected String finalName;
+	private String finalName;
 
 	@Parameter(required = true)
 	private File descriptor;
@@ -116,14 +117,14 @@ public class MakeXarMojo extends AbstractMojo {
 	 * The current repository/network configuration of Maven.
 	 */
 	@Parameter(defaultValue = "${repositorySystemSession}", readonly = true)
-	protected RepositorySystemSession repoSession;
+	private RepositorySystemSession repoSession;
 
 	/**
 	 * The project's remote repositories to use for the resolution of project
 	 * dependencies.
 	 */
 	@Parameter(defaultValue = "${project.remoteProjectRepositories}", readonly = true)
-	protected List<RemoteRepository> projectRepos;
+	private List<RemoteRepository> projectRepos;
 
 	@Component(role = org.codehaus.plexus.archiver.Archiver.class, hint = "zip")
 	private ZipArchiver zipArchiver;
@@ -155,6 +156,14 @@ public class MakeXarMojo extends AbstractMojo {
 		this.repoSession = repoSession;
 	}
 
+	public void setZipArchiver(ZipArchiver zipArchiver) {
+		this.zipArchiver = zipArchiver;
+	}
+
+	public void setRepoSystem(RepositorySystem repoSystem) {
+		this.repoSystem = repoSystem;
+	}
+
 	public void execute() throws MojoExecutionException, MojoFailureException {
 
 		// test if descriptor file exists
@@ -164,8 +173,9 @@ public class MakeXarMojo extends AbstractMojo {
 		}
 
 		// set needed variables
+		encoding = Optional.ofNullable(encoding).orElse("UTF-8");
 		final String outputDirectoryPath = outputDir.getAbsolutePath();
-		System.out.println("outputDirectoryPath = " + outputDirectoryPath);
+		getLog().info("outputDirectoryPath = " + outputDirectoryPath);
 		final String assemblyDescriptorName = descriptor.getName();
 		final String archiveTmpDirectoryPath = projectBuildDirectory + File.separator + "make-xar-tmp";
 		final Path descriptorsDirectoryPath = Paths.get(outputDirectoryPath, "expath-descriptors");
@@ -180,12 +190,14 @@ public class MakeXarMojo extends AbstractMojo {
 		Utils.filterResource(project, session, mavenResourcesFiltering, encoding, descriptor.getParent(),
 				assemblyDescriptorName, archiveTmpDirectoryPath, outputDir);
 		final File filteredDescriptor = Paths.get(archiveTmpDirectoryPath, assemblyDescriptorName).toFile();
+		getLog().info(
+				"filteredDescriptor: " + Files.exists(Paths.get(archiveTmpDirectoryPath, assemblyDescriptorName)));
 
 		// get the execution configuration
 		final DescriptorConfiguration executionConfig;
 		try (final Reader fileReader = new FileReader(filteredDescriptor)) {
 			executionConfig = new DescriptorConfiguration(Xpp3DomBuilder.build(fileReader));
-		} catch (final Exception e) {
+		} catch (Exception e) {
 			throw new MojoExecutionException(e.getMessage());
 		}
 
@@ -203,7 +215,7 @@ public class MakeXarMojo extends AbstractMojo {
 		Path existComponents = Paths.get(descriptorsDirectoryPath.toAbsolutePath().toString(), "exist-components.xml");
 		try {
 			Files.createDirectories(descriptorsDirectoryPath);
-			
+
 			Utils.xqueryTransformation(new FileInputStream(filteredDescriptor),
 					getClass().getResourceAsStream("generate-descriptors.xql"), project.getBasedir().toURI(), null,
 					existComponents);

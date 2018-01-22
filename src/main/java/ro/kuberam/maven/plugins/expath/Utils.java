@@ -56,9 +56,9 @@ public class Utils {
 			}
 
 			transformer.transform(new StreamSource(sourceFile), new StreamResult(new File(resultDir)));
-		} catch (final TransformerException ex) {
+		} catch (final TransformerException e) {
 			throw new MojoFailureException("An error occurred whilst transforming: " + sourceFile.getAbsolutePath()
-					+ " with: " + xsltUrl + " using parameters [" + parameters + "]", ex);
+					+ " with: " + xsltUrl + " using parameters [" + parameters + "]", e);
 		}
 	}
 
@@ -94,36 +94,37 @@ public class Utils {
 
 			out.setOutputStream(os);
 			processor.writeXdmValue(result, out);
-		} catch (SaxonApiException | IOException ex) {
-			throw new MojoFailureException("An error occurred whilst doing an xquery transformation: ", ex);
+		} catch (SaxonApiException | IOException e) {
+			throw new MojoFailureException("An error occurred whilst doing an xquery transformation: ", e);
 		}
 
 	}
 
-	public static void filterResource(final MavenProject project, final MavenSession session,
-			final MavenResourcesFiltering mavenResourcesFiltering, final String encoding, final String directory,
-			final String include, final String targetPath, final File outputDirectory) {
-		final List<String> filters = Collections.emptyList();
-		final List<String> defaultNonFilteredFileExtensions = Arrays.asList("jpg", "jpeg", "gif", "bmp", "png");
+	public static void filterResource(MavenProject project, MavenSession session,
+			MavenResourcesFiltering mavenResourcesFiltering, String encoding, String directory, String include,
+			String targetPath, File outputDirectory) throws MojoFailureException {
+		List<String> filters = Collections.emptyList();
+		List<String> defaultNonFilteredFileExtensions = Arrays.asList("jpg", "jpeg", "gif", "bmp", "png");
 
-		final Resource resource = new Resource();
+		Resource resource = new Resource();
 		resource.setDirectory(directory);
 		resource.addInclude(include);
 		resource.setFiltering(true);
 		resource.setTargetPath(targetPath);
 
-		final MavenResourcesExecution mavenResourcesExecution = new MavenResourcesExecution(
+		MavenResourcesExecution mavenResourcesExecution = new MavenResourcesExecution(
 				Collections.singletonList(resource), outputDirectory, project, encoding, filters,
 				defaultNonFilteredFileExtensions, session);
-		System.out.println("mavenResourcesExecution: " + mavenResourcesExecution);
+		System.out.println("mavenResourcesFiltering: " + mavenResourcesExecution);
+
 		mavenResourcesExecution.setInjectProjectBuildFilters(false);
 		mavenResourcesExecution.setOverwrite(true);
 		mavenResourcesExecution.setSupportMultiLineFiltering(true);
 
 		try {
 			mavenResourcesFiltering.filterResources(mavenResourcesExecution);
-		} catch (final MavenFilteringException e) {
-			e.printStackTrace();
+		} catch (MavenFilteringException e) {
+			throw new MojoFailureException(e.getMessage());
 		}
 
 	}

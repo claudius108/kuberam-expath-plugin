@@ -40,7 +40,8 @@ public class KuberamAbstractMojoTestBase extends PlexusTestCase {
 		return session;
 	}
 
-	protected void setVariableValueToObject(final Object object, final String variable, final Object value) throws IllegalAccessException {
+	protected void setVariableValueToObject(final Object object, final String variable, final Object value)
+			throws IllegalAccessException {
 		final Field field = ReflectionUtils.getFieldByNameIncludingSuperclasses(variable, object.getClass());
 		field.setAccessible(true);
 		field.set(object, value);
