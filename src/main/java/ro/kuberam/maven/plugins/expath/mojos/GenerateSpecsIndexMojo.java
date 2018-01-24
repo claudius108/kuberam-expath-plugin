@@ -19,8 +19,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.shared.model.fileset.FileSet;
-import org.apache.maven.shared.model.fileset.util.FileSetManager;
+import org.apache.maven.model.FileSet;
 
 import net.sf.saxon.s9api.QName;
 import net.sf.saxon.s9api.XdmAtomicValue;
@@ -60,18 +59,17 @@ public class GenerateSpecsIndexMojo extends AbstractMojo {
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 
-		final FileSetManager fileSetManager = new FileSetManager();
-		final List<Path> specPaths = new ArrayList<>();
+		List<Path> specPaths = new ArrayList<>();
 
-		final Path outputDirPath = outputDir.toPath().toAbsolutePath();
-		final Path outputFilePath = outputDirPath.resolve("index.html");
+		Path outputDirPath = outputDir.toPath().toAbsolutePath();
+		Path outputFilePath = outputDirPath.resolve("index.html");
 
-		for (final FileSet fileSet : filesets) {
-			final String directory = fileSet.getDirectory();
-			final String[] includedFiles = fileSetManager.getIncludedFiles(fileSet);
+		for (FileSet fileSet : filesets) {
+			String directory = fileSet.getDirectory();
+			List<String> includedFiles = fileSet.getIncludes();
 
-			for (final String includedFile : includedFiles) {
-				final Path includedFilePath = Paths.get(directory, includedFile).normalize();
+			for (String includedFile : includedFiles) {
+				Path includedFilePath = Paths.get(directory, includedFile).normalize();
 
 				if (Files.isDirectory(includedFilePath)) {
 					continue;

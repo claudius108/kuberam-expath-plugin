@@ -8,7 +8,6 @@ import java.nio.file.Paths;
 import org.apache.maven.shared.filtering.MavenResourcesFiltering;
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.zip.ZipArchiver;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.apache.maven.repository.RepositorySystem;
 import org.junit.Test;
 
@@ -21,20 +20,21 @@ public class MakeXarMojoTest extends KuberamAbstractMojoTestBase {
 	private Path testDirectory = Paths.get(getBasedir(), "target", "make-xar-tmp");
 	private RepositorySystem repositorySystem;
 
-	protected void setUp() throws Exception {
-		super.setUp();
-
-		if (Files.exists(testDirectory)) {
-			Files.walk(testDirectory).map(Path::toFile).sorted((o1, o2) -> -o1.compareTo(o2)).forEach(File::delete);
-		}
-		repositorySystem = lookup(RepositorySystem.class);
-	}
-
-	protected void tearDown() throws Exception {
-		repositorySystem = null;
-
-		super.tearDown();
-	}
+	// protected void setUp() throws Exception {
+	// super.setUp();
+	//
+	// if (Files.exists(testDirectory)) {
+	// Files.walk(testDirectory).map(Path::toFile).sorted((o1, o2) ->
+	// -o1.compareTo(o2)).forEach(File::delete);
+	// }
+	// repositorySystem = lookup(RepositorySystem.class);
+	// }
+	//
+	// protected void tearDown() throws Exception {
+	// repositorySystem = null;
+	//
+	// super.tearDown();
+	// }
 
 	@Test
 	public void testApplicationXar() throws Exception {
@@ -46,7 +46,7 @@ public class MakeXarMojoTest extends KuberamAbstractMojoTestBase {
 		mojo.execute();
 	}
 
-	private MakeXarMojo mojo2(Object... properties) throws ComponentLookupException, IllegalAccessException {
+	private MakeXarMojo mojo2(Object... properties) throws Exception {
 		StubMavenProject mavenProject = new StubMavenProject(new File(baseDir));
 		mavenProject.setVersion("1.0");
 		mavenProject.setGroupId("ro.kuberam");
@@ -61,8 +61,7 @@ public class MakeXarMojoTest extends KuberamAbstractMojoTestBase {
 		ZipArchiver zipArchiver = (ZipArchiver) lookup(Archiver.ROLE, "zip");
 		mojo.setZipArchiver(zipArchiver);
 
-		RepositorySystem repositorySystem = (RepositorySystem) lookup(
-				org.apache.maven.repository.RepositorySystem.class);
+		RepositorySystem repositorySystem = (RepositorySystem) lookup(RepositorySystem.class);
 		System.out.println(repositorySystem);
 		// mojo.setRepoSystem(lookup(RepositorySystem.class));
 
