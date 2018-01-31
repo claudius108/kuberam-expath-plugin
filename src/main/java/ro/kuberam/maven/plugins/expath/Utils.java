@@ -115,7 +115,6 @@ public class Utils {
 		MavenResourcesExecution mavenResourcesExecution = new MavenResourcesExecution(
 				Collections.singletonList(resource), outputDirectory, project, encoding, filters,
 				defaultNonFilteredFileExtensions, session);
-		System.out.println("mavenResourcesFiltering: " + mavenResourcesExecution);
 
 		mavenResourcesExecution.setInjectProjectBuildFilters(false);
 		mavenResourcesExecution.setOverwrite(true);

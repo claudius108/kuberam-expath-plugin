@@ -58,6 +58,8 @@ import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.StringUtils;
 import org.eclipse.aether.RepositorySystemSession;
 
+import ro.kuberam.maven.plugins.expath.mojos.TestArtifactHandler;
+
 /**
  * @author Benjamin Bentmann
  */

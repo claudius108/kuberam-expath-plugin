@@ -30,12 +30,6 @@ import java.util.jar.Attributes;
 
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.DefaultArtifact;
-import org.apache.maven.artifact.handler.DefaultArtifactHandler;
-import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.resolver.ArtifactResolutionRequest;
-import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -45,7 +39,6 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.repository.RepositorySystem;
 import org.apache.maven.shared.filtering.MavenResourcesFiltering;
 import org.codehaus.plexus.archiver.ArchiveEntry;
 import org.codehaus.plexus.archiver.ArchiverException;
@@ -53,6 +46,15 @@ import org.codehaus.plexus.archiver.ResourceIterator;
 import org.codehaus.plexus.archiver.zip.ZipArchiver;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
+import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.RepositorySystemSession;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
+import org.eclipse.aether.repository.ArtifactRepository;
+import org.eclipse.aether.repository.RemoteRepository;
+import org.eclipse.aether.resolution.ArtifactRequest;
+import org.eclipse.aether.resolution.ArtifactResolutionException;
+import org.eclipse.aether.resolution.ArtifactResult;
 
 import net.sf.saxon.s9api.Processor;
 import net.sf.saxon.s9api.SaxonApiException;
@@ -123,7 +125,24 @@ public class MakeXarMojo extends AbstractMojo {
 	private ZipArchiver zipArchiver;
 
 	@Component
-	private RepositorySystem repositorySystem;
+	private RepositorySystem repoSystem;
+
+	/**
+	 * The current repository/network configuration of Maven.
+	 * 
+	 * @parameter default-value="${repositorySystemSession}"
+	 * @readonly
+	 */
+	@Parameter(defaultValue = "${repositorySystemSession}", readonly = true)
+	private RepositorySystemSession repoSession;
+
+	/**
+	 * The project's remote repositories to use for the resolution.
+	 * 
+	 * @parameter default-value="${project.remoteProjectRepositories}"
+	 * @readonly
+	 */
+	private List<RemoteRepository> remoteRepos;
 
 	private static final String componentsTemplateFileContent = new XmlStringBuilder().startDocument()
 			.xmlDeclaration("1.0", UTF_8).startElement(PACKAGE_ELEM_NAME).text("${components}")
@@ -149,10 +168,6 @@ public class MakeXarMojo extends AbstractMojo {
 		this.zipArchiver = zipArchiver;
 	}
 
-	public void setRepoSystem(org.apache.maven.repository.RepositorySystem repositorySystem) {
-		this.repositorySystem = repositorySystem;
-	}
-
 	public void execute() throws MojoExecutionException, MojoFailureException {
 
 		// test if descriptor file exists
@@ -170,17 +185,10 @@ public class MakeXarMojo extends AbstractMojo {
 		final Path descriptorsDirectoryPath = Paths.get(outputDirectoryPath, "expath-descriptors");
 		getLog().info("descriptorsDirectoryPath: " + descriptorsDirectoryPath);
 
-		// Plugin xarPlugin =
-		// project.getPlugin("ro.kuberam.maven.plugins:kuberam-xar-plugin");
-		// DescriptorConfiguration mainConfig = new
-		// DescriptorConfiguration((Xpp3Dom) xarPlugin.getConfiguration());
-
 		// filter the descriptor file
 		Utils.filterResource(project, session, mavenResourcesFiltering, encoding, descriptor.getParent(),
 				assemblyDescriptorName, archiveTmpDirectoryPath, outputDir);
 		final File filteredDescriptor = Paths.get(archiveTmpDirectoryPath, assemblyDescriptorName).toFile();
-		getLog().info(
-				"filteredDescriptor: " + Files.exists(Paths.get(archiveTmpDirectoryPath, assemblyDescriptorName)));
 
 		// get the execution configuration
 		final DescriptorConfiguration executionConfig;
@@ -221,40 +229,29 @@ public class MakeXarMojo extends AbstractMojo {
 			final String outputFileNameMapping = dependencySet.getOutputFileNameMapping();
 
 			// define the artifact
-			final Artifact artifactReference;
+			Artifact artifact;
 			try {
-				artifactReference = new DefaultArtifact(dependencySet.getGroupId(), dependencySet.getArtifactId(),
-						dependencySet.getVersion(), null, "jar", "", new DefaultArtifactHandler("jar"));
-			} catch (final IllegalArgumentException e) {
+				artifact = new DefaultArtifact(dependencySet.getGroupId() + ":" + dependencySet.getArtifactId() + ":"
+						+ dependencySet.getVersion());
+			} catch (IllegalArgumentException e) {
 				throw new MojoFailureException(e.getMessage(), e);
 			}
 
-			final String artifactIdentifier = artifactReference.toString();
-			getLog().debug("Resolving artifact: " + artifactReference);
+			ArtifactRequest request = new ArtifactRequest();
+			request.setArtifact(artifact);
+			request.setRepositories(remoteRepos);
+			getLog().info("Resolving artifact " + artifact + " from " + remoteRepos);
 
-			// resolve the artifact
-			// final ArtifactRequest request = new ArtifactRequest();
-			// request.setArtifact(artifactReference);
-			// request.setRepositories(projectRepos);
+			ArtifactResult result;
+			File artifactFile;
+			try {
+				result = repoSystem.resolveArtifact(repoSession, request);
+				artifactFile = result.getArtifact().getFile();
+			} catch (ArtifactResolutionException e) {
+				throw new MojoExecutionException(e.getMessage(), e);
+			}
+			getLog().info("Resolved artifact " + artifact + " to " + artifactFile + " from " + result.getRepository());
 
-			ArtifactResolutionRequest request = new ArtifactResolutionRequest();
-			request.setArtifact(artifactReference);
-			getLog().debug("session: " + session);
-			request.setLocalRepository(session.getLocalRepository());
-			request.setRemoteRepositories(artifactRepositories);
-			ArtifactResolutionResult resolutionResult = repositorySystem.resolve(request);
-
-			// final ArtifactResult artifactResult;
-			// try {
-			// artifactResult = repositorySystem.resolve(request);
-			// } catch (final ArtifactResolutionException e) {
-			// throw new MojoExecutionException(e.getMessage(), e);
-			// }
-
-			getLog().info("Resolved artifact: " + artifactReference);
-
-			File artifactFile = resolutionResult.getOriginatingArtifact().getFile();
-			getLog().info("artifactFile: " + artifactFile);
 			final String artifactFileAbsolutePath = artifactFile.getAbsolutePath();
 			String artifactFileName = artifactFile.getName();
 			if (!outputFileNameMapping.isEmpty()) {
@@ -273,7 +270,7 @@ public class MakeXarMojo extends AbstractMojo {
 			getLog().debug("archiveComponentPath: " + archiveComponentPath);
 
 			// collect metadata about module's java main class for exist.xml
-			if (i == 0 && artifactIdentifier.contains(":jar:")) {
+			if (i == 0 && artifact.toString().contains(":jar:")) {
 				components.startElement(RESOURCE_ELEM_NAME).startElement(PUBLIC_URI_ELEM_NAME)
 						.text(EXPATH_PKG_MODULE_MAIN_CLASS_NS).endElement(PUBLIC_URI_ELEM_NAME)
 
@@ -377,13 +374,13 @@ public class MakeXarMojo extends AbstractMojo {
 			for (final Path entry : stream) {
 				zipArchiver.addFile(entry.toFile(), entry.getFileName().toString());
 			}
-		} catch (final IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 		try {
 			zipArchiver.createArchive();
-		} catch (final ArchiverException | IOException e1) {
+		} catch (ArchiverException | IOException e1) {
 			e1.printStackTrace();
 		}
 

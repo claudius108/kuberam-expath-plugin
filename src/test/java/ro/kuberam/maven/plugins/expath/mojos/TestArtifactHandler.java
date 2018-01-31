@@ -1,4 +1,4 @@
-package ro.kuberam.maven.plugins.expath.mojos.makeXar;
+package ro.kuberam.maven.plugins.expath.mojos;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -26,58 +26,47 @@ import org.apache.maven.artifact.handler.ArtifactHandler;
  *
  * @author Benjamin Bentmann
  */
-class TestArtifactHandler
-    implements ArtifactHandler
-{
+public class TestArtifactHandler implements ArtifactHandler {
 
-    private String type;
+	private String type;
 
-    private String extension;
+	private String extension;
 
-    public TestArtifactHandler( String type )
-    {
-        this( type, type );
-    }
+	public TestArtifactHandler(String type) {
+		this(type, type);
+	}
 
-    public TestArtifactHandler( String type, String extension )
-    {
-        this.type = type;
-        this.extension = extension;
-    }
+	public TestArtifactHandler(String type, String extension) {
+		this.type = type;
+		this.extension = extension;
+	}
 
-    public String getClassifier()
-    {
-        return null;
-    }
+	public String getClassifier() {
+		return null;
+	}
 
-    public String getDirectory()
-    {
-        return getPackaging() + "s";
-    }
+	public String getDirectory() {
+		return getPackaging() + "s";
+	}
 
-    public String getExtension()
-    {
-        return extension;
-    }
+	public String getExtension() {
+		return extension;
+	}
 
-    public String getLanguage()
-    {
-        return "java";
-    }
+	public String getLanguage() {
+		return "java";
+	}
 
-    public String getPackaging()
-    {
-        return type;
-    }
+	public String getPackaging() {
+		return type;
+	}
 
-    public boolean isAddedToClasspath()
-    {
-        return true;
-    }
+	public boolean isAddedToClasspath() {
+		return true;
+	}
 
-    public boolean isIncludesDependencies()
-    {
-        return false;
-    }
+	public boolean isIncludesDependencies() {
+		return false;
+	}
 
 }
