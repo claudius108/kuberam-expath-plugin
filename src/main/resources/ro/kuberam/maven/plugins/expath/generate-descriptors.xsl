@@ -6,7 +6,7 @@
 
 	<xsl:output method="xml" indent="yes" omit-xml-declaration="no" />
 
-	<xsl:param name="package-dir" as="xs:anyURI"/>
+	<xsl:param name="package-dir" as="xs:anyURI" />
 	<xsl:variable name="package-type" select="/*/pkg:type" />
 	<xsl:variable name="package-version" select="/*/@version" />
 
@@ -17,15 +17,14 @@
 	<xsl:variable name="components"
 		select="collection(concat($package-dir, '?select=components.xml'))/element()" />
 	<xsl:variable name="exist-components"
-		select="collection(concat($package-dir, '?select=exist-components.xml'))/element()" />		
+		select="collection(concat($package-dir, '?select=exist-components.xml'))/element()" />
 
 	<xsl:template match="/">
 		<xsl:choose>
 			<xsl:when
 				test="/*/*[local-name() = 'dependency' and @processor = 'http://exist-db.org']">
 				<!-- generate exist.xml -->
-				<xsl:result-document
-					href="{concat($package-dir, '/exist.xml')}">
+				<xsl:result-document href="{concat($package-dir, '/exist.xml')}">
 					<package xmlns="http://exist-db.org/ns/expath-pkg">
 						<xsl:copy-of select="$exist-components/*" />
 						<xsl:for-each select="$components/element()">
@@ -65,8 +64,7 @@
 		</xsl:result-document>
 
 		<!-- generate expath-pkg.xml -->
-		<xsl:result-document
-			href="{concat($package-dir, '/expath-pkg.xml')}">
+		<xsl:result-document href="{concat($package-dir, '/expath-pkg.xml')}">
 			<package xmlns="http://expath.org/ns/pkg" name="{$name}"
 				abbrev="{$abbrev}" version="{$package-version}" spec="1.0">
 				<xsl:copy-of select="$title" />
@@ -131,21 +129,21 @@
 					</finish>
 				</xsl:if>
 				<xsl:if test="/*/pkg:permissions">
-					<xsl:variable name="permissions" select="/*/pkg:permissions" />
-					<permissions user="{$permissions/@user}" password="{$permissions/@password}"
-						group="{$permissions/@group}" mode="{$permissions/@mode}" />
+					<permissions>
+						<xsl:copy-of select="/*/pkg:permissions/@*" />
+					</permissions>
 				</xsl:if>
 				<xsl:if test="/*/pkg:note">
-                    <note>
-                        <xsl:value-of select="/*/pkg:note" />
-                    </note>
-                </xsl:if>
-                <xsl:if test="/*/pkg:changelog">
-                    <changelog>
-                        <xsl:copy-of select="/*/pkg:changelog/node()"/>
-                    </changelog>
-                </xsl:if>
-                <xsl:if test="/*/pkg:deployed">
+					<note>
+						<xsl:value-of select="/*/pkg:note" />
+					</note>
+				</xsl:if>
+				<xsl:if test="/*/pkg:changelog">
+					<changelog>
+						<xsl:copy-of select="/*/pkg:changelog/node()" />
+					</changelog>
+				</xsl:if>
+				<xsl:if test="/*/pkg:deployed">
 					<deployed>
 						<xsl:value-of select="/*/pkg:deployed" />
 					</deployed>
