@@ -5,7 +5,7 @@
 
 	<groupId>ro.kuberam.maven.plugins</groupId>
 	<artifactId>kuberam-expath-plugin</artifactId>
-	<version>0.5.5</version>
+	<version>0.5.6</version>
 	<packaging>maven-plugin</packaging>
 	<name>Kuberam EXPath Plugin</name>
 	<description>Plugin for EXPath related functionality</description>
@@ -59,10 +59,7 @@
 		<maven.version>3.5.2</maven.version>
 		<aether.version>1.1.0</aether.version>
 		<maven.plugin.plugin.version>3.5</maven.plugin.plugin.version>
-		<wagonVersion>2.12</wagonVersion>
-		<resolverVersion>1.1.0</resolverVersion>
 		<plexusVersion>1.7.1</plexusVersion>
-		<sisuInjectVersion>0.3.3</sisuInjectVersion>
 	</properties>
 
 	<distributionManagement>
@@ -139,7 +136,6 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
 
 	<build>
 		<plugins>

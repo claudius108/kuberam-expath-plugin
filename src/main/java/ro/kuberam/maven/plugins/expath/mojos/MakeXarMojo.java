@@ -228,7 +228,6 @@ public class MakeXarMojo extends AbstractMojo {
 			String dependencySetOutputDirectory = dependencySet.getOutputDirectory();
 			final String outputFileNameMapping = dependencySet.getOutputFileNameMapping();
 
-			// define the artifact
 			Artifact artifact;
 			try {
 				artifact = new DefaultArtifact(dependencySet.getGroupId() + ":" + dependencySet.getArtifactId() + ":"
@@ -240,7 +239,7 @@ public class MakeXarMojo extends AbstractMojo {
 			ArtifactRequest request = new ArtifactRequest();
 			request.setArtifact(artifact);
 			request.setRepositories(remoteRepos);
-			getLog().info("Resolving artifact " + artifact + " from " + remoteRepos);
+			getLog().info("Resolving artifact " + artifact + ".");
 
 			ArtifactResult result;
 			File artifactFile;
