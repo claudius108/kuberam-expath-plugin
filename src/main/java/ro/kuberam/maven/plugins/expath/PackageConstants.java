@@ -5,8 +5,6 @@ import javax.xml.namespace.QName;
 public interface PackageConstants {
 
     String EXPATH_PKG_NS = "http://exist-db.org/ns/expath-pkg";
-    String EXPATH_PKG_MODULE_MAIN_CLASS_NS = "http://exist-db.org/ns/expath-pkg/module-main-class";
-    String EXPATH_PKG_MODULE_NAMESPACE_NS = "http://exist-db.org/ns/expath-pkg/module-namespace";
 
     QName PACKAGE_ELEM_NAME = new QName(EXPATH_PKG_NS, "package");
     QName CONTENTS_ELEM_NAME = new QName(EXPATH_PKG_NS,"contents");

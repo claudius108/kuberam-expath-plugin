@@ -3,8 +3,6 @@ package ro.kuberam.maven.plugins.expath.mojos;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static ro.kuberam.maven.plugins.expath.PackageConstants.COMPONENTS_FILENAME;
 import static ro.kuberam.maven.plugins.expath.PackageConstants.CONTENTS_ELEM_NAME;
-import static ro.kuberam.maven.plugins.expath.PackageConstants.EXPATH_PKG_MODULE_MAIN_CLASS_NS;
-import static ro.kuberam.maven.plugins.expath.PackageConstants.EXPATH_PKG_MODULE_NAMESPACE_NS;
 import static ro.kuberam.maven.plugins.expath.PackageConstants.FILE_ELEM_NAME;
 import static ro.kuberam.maven.plugins.expath.PackageConstants.NAMESPACE_ELEM_NAME;
 import static ro.kuberam.maven.plugins.expath.PackageConstants.PACKAGE_ELEM_NAME;
