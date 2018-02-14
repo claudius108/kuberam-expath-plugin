@@ -251,7 +251,7 @@ public class MakeXarMojo extends AbstractMojo {
 			}
 			getLog().info("Resolved artifact " + artifact + " to " + artifactFile + " from " + result.getRepository());
 
-			final String artifactFileAbsolutePath = artifactFile.getAbsolutePath();
+			String artifactFileAbsolutePath = artifactFile.getAbsolutePath();
 			String artifactFileName = artifactFile.getName();
 			if (!outputFileNameMapping.isEmpty()) {
 				artifactFileName = outputFileNameMapping;
@@ -267,21 +267,6 @@ public class MakeXarMojo extends AbstractMojo {
 			}
 			zipArchiver.addFile(artifactFile, archiveComponentPath);
 			getLog().debug("archiveComponentPath: " + archiveComponentPath);
-
-			// collect metadata about module's java main class for exist.xml
-			if (i == 0 && artifact.toString().contains(":jar:")) {
-				components.startElement(RESOURCE_ELEM_NAME).startElement(PUBLIC_URI_ELEM_NAME)
-						.text(EXPATH_PKG_MODULE_MAIN_CLASS_NS).endElement(PUBLIC_URI_ELEM_NAME)
-
-						.startElement(FILE_ELEM_NAME).text(getMainClass(artifactFileAbsolutePath).get(0))
-						.endElement(FILE_ELEM_NAME).endElement(RESOURCE_ELEM_NAME)
-
-						.startElement(RESOURCE_ELEM_NAME).startElement(PUBLIC_URI_ELEM_NAME)
-						.text(EXPATH_PKG_MODULE_NAMESPACE_NS).endElement(PUBLIC_URI_ELEM_NAME)
-
-						.startElement(FILE_ELEM_NAME).text(getMainClass(artifactFileAbsolutePath).get(1))
-						.endElement(FILE_ELEM_NAME).endElement(RESOURCE_ELEM_NAME);
-			}
 		}
 
 		// process the xquery sets
@@ -321,7 +306,7 @@ public class MakeXarMojo extends AbstractMojo {
 			}
 		}
 
-		final String componentsString = unwrap(components.endElement(CONTENTS_ELEM_NAME).endDocument().build());
+		String componentsString = unwrap(components.endElement(CONTENTS_ELEM_NAME).endDocument().build());
 
 		project.getModel().addProperty("components", componentsString);
 
