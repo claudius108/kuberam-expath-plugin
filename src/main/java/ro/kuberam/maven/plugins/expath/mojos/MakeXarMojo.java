@@ -379,23 +379,4 @@ public class MakeXarMojo extends AbstractMojo {
 
 		return xml.replaceAll("^<[^>]+>(.*)", "$1").replaceAll("(.*)</[^>]+>$", "$1");
 	}
-
-	private static List<String> getMainClass(final String firstDependencyAbsolutePath) {
-		final List<String> result = new ArrayList<>();
-
-		Attributes attr = null;
-		try {
-			final URL u = new URL("jar", "", "file://" + firstDependencyAbsolutePath + "!/");
-			final JarURLConnection uc = (JarURLConnection) u.openConnection();
-			attr = uc.getMainAttributes();
-		} catch (final Exception e1) {
-			e1.printStackTrace();
-		}
-
-		result.add(attr.getValue(Attributes.Name.MAIN_CLASS));
-		result.add(attr.getValue("ModuleNamespace"));
-
-		return result;
-	}
-
 }
