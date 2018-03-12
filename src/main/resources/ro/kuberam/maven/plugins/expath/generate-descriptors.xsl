@@ -10,6 +10,7 @@
 	<xsl:variable name="package-type" select="/*/pkg:type" />
 	<xsl:variable name="package-version" select="/*/@version" />
 
+	<xsl:variable name="description" select="/*/pkg:description" />
 	<xsl:variable name="abbrev" select="/*/@abbrev" />
 	<xsl:variable name="name" select="/*/@name" />
 	<xsl:variable name="title" select="/*/pkg:title" />
@@ -91,7 +92,7 @@
 		<xsl:result-document href="{concat($package-dir, '/repo.xml')}">
 			<meta xmlns="http://exist-db.org/xquery/repo" xmlns:repo="http://exist-db.org/xquery/repo">
 				<description>
-					<xsl:value-of select="$title" />
+					<xsl:value-of select="$description" />
 				</description>
 				<xsl:for-each select="$authors">
 					<author id="{@id}">
