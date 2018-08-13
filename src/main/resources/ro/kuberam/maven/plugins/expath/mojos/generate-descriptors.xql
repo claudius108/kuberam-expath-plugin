@@ -14,11 +14,11 @@ declare variable $java-class-nid := "urn:java:class:";
 		return (
 			if (starts-with($urn, $java-class-nid))
 			then
-				let $java-class-name := substring-after($urn, $java-class-nid)
+				let $java-class-name := normalize-space(substring-after($urn, $java-class-nid))
 				
 				return
 					<java>
-						<namespace>{$component/pkg:public-uri/text()}</namespace>
+						<namespace>{normalize-space($component/pkg:public-uri/text())}</namespace>
 						<class>{$java-class-name}</class>
 					</java>
 			else ()

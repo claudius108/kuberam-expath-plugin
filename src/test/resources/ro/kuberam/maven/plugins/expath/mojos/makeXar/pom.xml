@@ -24,7 +24,7 @@
 			<plugin>
 				<groupId>ro.kuberam.maven.plugins</groupId>
 				<artifactId>kuberam-expath-plugin</artifactId>
-				<version>0.3</version>
+				<version>0.5.9</version>
 				<executions>
 					<execution>
 						<id>create-application-archive</id>
