@@ -15,11 +15,11 @@ public class ExpathFileSet extends org.codehaus.plexus.archiver.util.DefaultFile
         return excludes;
     }
 
-    public void setIncludes(final String includesString) {
+    public void setIncludes(String includesString) {
         includes = includesString.split(",");
     }
 
-    public void setExcludes(final String excludesString) {
+    public void setExcludes(String excludesString) {
         excludes = excludesString.split(",");
     }
 }

@@ -20,34 +20,34 @@ public class DescriptorConfiguration extends Xpp3Dom {
 
     public List<ExpathFileSet> getFileSets() {
 
-        final List<ExpathFileSet> fileSets = new ArrayList<>();
-        final Xpp3Dom fileSetsElement = this.getChild("fileSets");
+        List<ExpathFileSet> fileSets = new ArrayList<>();
+        Xpp3Dom fileSetsElement = this.getChild("fileSets");
         if (null != fileSetsElement) {
-            final Xpp3Dom[] fileSetChildren = fileSetsElement.getChildren("fileSet");
-            for (final Xpp3Dom fileSetChild : fileSetChildren) {
-                final ExpathFileSet fileSet = new ExpathFileSet();
+            Xpp3Dom[] fileSetChildren = fileSetsElement.getChildren("fileSet");
+            for (Xpp3Dom fileSetChild : fileSetChildren) {
+                ExpathFileSet fileSet = new ExpathFileSet();
                 fileSet.setDirectory(new File(fileSetChild.getChild("directory").getValue()));
 
-                final String outputDirectory = getOutputDirectory(fileSetChild);
+                String outputDirectory = getOutputDirectory(fileSetChild);
 
                 fileSet.setPrefix(outputDirectory);
 
                 fileSet.setIncludes("**/*.*");
-                final Xpp3Dom includesElement = fileSetChild.getChild("includes");
+                Xpp3Dom includesElement = fileSetChild.getChild("includes");
                 if (null != includesElement) {
-                    final StringBuilder includesString = new StringBuilder();
-                    final Xpp3Dom[] includeElements = includesElement.getChildren("include");
-                    for (final Xpp3Dom includeElement : includeElements) {
+                    StringBuilder includesString = new StringBuilder();
+                    Xpp3Dom[] includeElements = includesElement.getChildren("include");
+                    for (Xpp3Dom includeElement : includeElements) {
                         includesString.append(includeElement.getValue()).append(',');
                     }
                     fileSet.setIncludes(includesString.substring(0, includesString.length() - 1));
                 }
                 fileSet.setExcludes(".project/,.settings/");
-                final Xpp3Dom excludesElement = fileSetChild.getChild("excludes");
+                Xpp3Dom excludesElement = fileSetChild.getChild("excludes");
                 if (null != excludesElement) {
-                    final StringBuilder excludesString = new StringBuilder();
-                    final Xpp3Dom[] excludeElements = excludesElement.getChildren("exclude");
-                    for (final Xpp3Dom excludeElement : excludeElements) {
+                    StringBuilder excludesString = new StringBuilder();
+                    Xpp3Dom[] excludeElements = excludesElement.getChildren("exclude");
+                    for (Xpp3Dom excludeElement : excludeElements) {
                         excludesString.append(excludeElement.getValue()).append(',');
                     }
                     excludesString.append( ".project/,.settings/");
@@ -135,7 +135,7 @@ public class DescriptorConfiguration extends Xpp3Dom {
     public static String getOutputDirectory(final Xpp3Dom parentElement) {
         final Xpp3Dom outputDirectoryElement = parentElement.getChild("outputDirectory");
 
-        String outputDirectory = Optional.ofNullable(outputDirectoryElement).map(Xpp3Dom::getValue).orElse("");
+        String outputDirectory = Optional.ofNullable(outputDirectoryElement).map(Xpp3Dom::getValue).orElse("/");
         if (!outputDirectory.endsWith("/")) {
             outputDirectory = outputDirectory + "/";
         }

@@ -15,16 +15,12 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.net.JarURLConnection;
-import java.net.URL;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.jar.Attributes;
 
 import javax.xml.transform.stream.StreamSource;
 
@@ -269,12 +265,12 @@ public class MakeXarMojo extends AbstractMojo {
 
 		// process the xquery sets
 
-		for (final ExpathXquerySet xquerySet : xquerySets) {
+		for (ExpathXquerySet xquerySet : xquerySets) {
 			zipArchiver.addFileSet(xquerySet);
 
-			final String namespace = xquerySet.getNamespace();
+			String namespace = xquerySet.getNamespace();
 
-			for (final String include : xquerySet.getIncludes()) {
+			for (String include : xquerySet.getIncludes()) {
 				components.startElement(XQUERY_ELEM_NAME).startElement(NAMESPACE_ELEM_NAME).text(namespace)
 						.endElement(NAMESPACE_ELEM_NAME)
 
@@ -284,15 +280,15 @@ public class MakeXarMojo extends AbstractMojo {
 		}
 
 		// process the file sets
-		for (final ExpathFileSet fileSet : fileSets) {
+		for (ExpathFileSet fileSet : fileSets) {
 			zipArchiver.addFileSet(fileSet);
 		}
 
 		// collect metadata about the archive's entries
 		final ResourceIterator itr = zipArchiver.getResources();
 		while (itr.hasNext()) {
-			final ArchiveEntry entry = itr.next();
-			final String entryPath = entry.getName();
+			ArchiveEntry entry = itr.next();
+			String entryPath = entry.getName();
 
 			// resource files
 			if (entryPath.endsWith(".jar")) {
@@ -341,7 +337,7 @@ public class MakeXarMojo extends AbstractMojo {
 
 			Files.delete(descriptorsDirectoryPath.resolve("components.xml"));
 			Files.delete(existComponents);
-		} catch (final SaxonApiException | IOException e) {
+		} catch (SaxonApiException | IOException e) {
 			e.printStackTrace();
 		}
 		// add the expath descriptors
@@ -372,7 +368,7 @@ public class MakeXarMojo extends AbstractMojo {
 	/**
 	 * just removes the outer container element of some xml
 	 */
-	private String unwrap(final String xml) {
+	private String unwrap(String xml) {
 		if (xml == null) {
 			return null;
 		}
