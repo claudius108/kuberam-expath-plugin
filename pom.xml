@@ -56,7 +56,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<maven.version>3.5.4</maven.version>
+		<maven.version>3.6.0</maven.version>
 		<aether.version>1.1.0</aether.version>
 		<maven.plugin.plugin.version>3.5.2</maven.plugin.plugin.version>
 		<plexusVersion>1.7.1</plexusVersion>
