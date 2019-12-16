@@ -17,55 +17,31 @@ public class DescriptorConfiguration extends Xpp3Dom {
 	 *
 	 */
 	private static final long serialVersionUID = -8323628485538303936L;
-	private String defaultExcludes = ".project,.settings/,target/,pom.xml";
+	private String defaultIncludes = "**/*.*";
+	private String defaultExcludes = ".project,.settings/,target/,pom.xml,build/";
 
 	public List<ExpathFileSet> getFileSets() {
 
-		List<ExpathFileSet> fileSets = new ArrayList<>();
-		Xpp3Dom fileSetsElement = this.getChild("fileSets");
-		if (null != fileSetsElement) {
-			Xpp3Dom[] fileSetChildren = fileSetsElement.getChildren("fileSet");
-			for (Xpp3Dom fileSetChild : fileSetChildren) {
-				ExpathFileSet fileSet = new ExpathFileSet();
-				fileSet.setDirectory(new File(fileSetChild.getChild("directory").getValue()));
+		List<ExpathFileSet> sets = new ArrayList<>();
+		Xpp3Dom setsElement = this.getChild("fileSets");
+		if (null != setsElement) {
+			Xpp3Dom[] setElements = setsElement.getChildren("fileSet");
+			for (Xpp3Dom setElement : setElements) {
+				ExpathFileSet set = new ExpathFileSet();
+				set.setDirectory(new File(setElement.getChild("directory").getValue()));
 
-				String outputDirectory = getOutputDirectory(fileSetChild);
+				String outputDirectory = getOutputDirectory(setElement);
 
-				fileSet.setPrefix(outputDirectory);
+				set.setPrefix(outputDirectory);
 
-				fileSet.setIncludes("**/*.*");
-				Xpp3Dom includesElement = fileSetChild.getChild("includes");
-				if (null != includesElement) {
-					StringBuilder includesString = new StringBuilder();
-					Xpp3Dom[] includeElements = includesElement.getChildren("include");
-					for (Xpp3Dom includeElement : includeElements) {
-						includesString.append(includeElement.getValue()).append(',');
-					}
-					fileSet.setIncludes(includesString.substring(0, includesString.length() - 1));
-				}
-
-				Xpp3Dom excludesElement = fileSetChild.getChild("excludes");
-				String excludesString = Optional.ofNullable(excludesElement).map(e -> {
-					Xpp3Dom[] excludeElements = excludesElement.getChildren("exclude");
-					StringBuilder sb = new StringBuilder();
-
-					for (Xpp3Dom excludeElement : excludeElements) {
-						sb.append(excludeElement.getValue()).append(',');
-					}
-					sb.append(defaultExcludes);
-
-					return sb.toString();
-				}).orElse(defaultExcludes);
+				setIncludes(set, setElement.getChild("includes"));
+				setEXcludes(set, setElement.getChild("excludes"));
 				
-				System.out.println("excludesString = " + excludesString);
-
-				fileSet.setExcludes(excludesString);
-
-				fileSets.add(fileSet);
+				sets.add(set);
 			}
 		}
 
-		return fileSets;
+		return sets;
 	}
 
 	public List<ExpathDependencySet> getDependencySets() {
@@ -90,47 +66,28 @@ public class DescriptorConfiguration extends Xpp3Dom {
 	}
 
 	public List<ExpathXquerySet> getXquerySets() {
-		List<ExpathXquerySet> xquerySets = new ArrayList<>();
-		Xpp3Dom xquerySetsElement = this.getChild("xquerySets");
-		if (null != xquerySetsElement) {
-			Xpp3Dom[] xquerySetElementChildren = xquerySetsElement.getChildren("xquerySet");
-			for (Xpp3Dom xquerySetElementChild : xquerySetElementChildren) {
-				ExpathXquerySet xquerySet = new ExpathXquerySet();
+		List<ExpathXquerySet> sets = new ArrayList<>();
+		Xpp3Dom setsElement = this.getChild("xquerySets");
+		if (null != setsElement) {
+			Xpp3Dom[] setElements = setsElement.getChildren("xquerySet");
+			for (Xpp3Dom setElement : setElements) {
+				ExpathXquerySet set = new ExpathXquerySet();
 
-				xquerySet.setDirectory(new File(xquerySetElementChild.getChild("directory").getValue()));
+				set.setDirectory(new File(setElement.getChild("directory").getValue()));
 
-				xquerySet.setNamespace(xquerySetElementChild.getChild("namespace").getValue());
+				set.setNamespace(setElement.getChild("namespace").getValue());
 
-				String outputDirectory = getOutputDirectory(xquerySetElementChild);
-				xquerySet.setPrefix(outputDirectory);
+				String outputDirectory = getOutputDirectory(setElement);
+				set.setPrefix(outputDirectory);
 
-				xquerySet.setIncludes("**/*.*");
-				Xpp3Dom includesElement = xquerySetElementChild.getChild("includes");
-				if (null != includesElement) {
-					StringBuilder includesString = new StringBuilder();
-					Xpp3Dom[] includeElements = includesElement.getChildren("include");
-					for (Xpp3Dom includeElement : includeElements) {
-						includesString.append(includeElement.getValue()).append(',');
-					}
-					xquerySet.setIncludes(includesString.substring(0, includesString.length() - 1));
-				}
-
-				xquerySet.setExcludes(".project/,.settings/");
-				Xpp3Dom excludesElement = xquerySetElementChild.getChild("excludes");
-				if (null != excludesElement) {
-					StringBuilder excludesString = new StringBuilder();
-					Xpp3Dom[] excludeElements = excludesElement.getChildren("exclude");
-					for (Xpp3Dom excludeElement : excludeElements) {
-						excludesString.append(excludeElement.getValue()).append(',');
-					}
-					excludesString.append(".project/,.settings/");
-					xquerySet.setExcludes(excludesString.toString());
-				}
-				xquerySets.add(xquerySet);
+				setIncludes(set, setElement.getChild("includes"));
+				setEXcludes(set, setElement.getChild("excludes"));
+				
+				sets.add(set);
 			}
 		}
 
-		return xquerySets;
+		return sets;
 	}
 
 	public String getModuleNamespace() {
@@ -151,6 +108,39 @@ public class DescriptorConfiguration extends Xpp3Dom {
 		outputDirectory = outputDirectory.replaceAll("^/", "");
 
 		return outputDirectory;
+	}
+	
+	private ExpathFileSet setIncludes(ExpathFileSet set, Xpp3Dom includesElement) {
+		String includesString = Optional.ofNullable(includesElement).map(e -> {
+			Xpp3Dom[] includeElements = includesElement.getChildren("include");
+			StringBuilder sb = new StringBuilder();
+
+			for (Xpp3Dom includeElement : includeElements) {
+				sb.append(includeElement.getValue()).append(',');
+			}
+
+			return sb.toString();
+		}).orElse(defaultIncludes);
+		set.setIncludes(includesString);
+		
+		return set;
+	}
+	
+	private ExpathFileSet setEXcludes(ExpathFileSet set, Xpp3Dom excludesElement) {
+		String excludesString = Optional.ofNullable(excludesElement).map(e -> {
+			Xpp3Dom[] excludeElements = excludesElement.getChildren("exclude");
+			StringBuilder sb = new StringBuilder();
+
+			for (Xpp3Dom excludeElement : excludeElements) {
+				sb.append(excludeElement.getValue()).append(',');
+			}
+			sb.append(defaultExcludes);
+
+			return sb.toString();
+		}).orElse(defaultExcludes);
+		set.setExcludes(excludesString);	
+		
+		return set;
 	}
 
 }
