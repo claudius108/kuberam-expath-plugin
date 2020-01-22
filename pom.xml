@@ -5,7 +5,7 @@
 
 	<groupId>ro.kuberam.maven.plugins</groupId>
 	<artifactId>kuberam-expath-plugin</artifactId>
-	<version>0.6.1</version>
+	<version>0.6.2-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 	<name>Kuberam EXPath Plugin</name>
 	<description>Plugin for EXPath related functionality</description>
