@@ -16,7 +16,7 @@ public class ExpathDependencySet {
     private final String outputDirectory;
     private final String outputFileNameMapping;
 
-    public ExpathDependencySet(final String groupId, final String artifactId, final String version, String classifier, final String outputDirectory, final String outputFileNameMapping) {
+    public ExpathDependencySet(final String groupId, final String artifactId, final String version, final String classifier, final String outputDirectory, final String outputFileNameMapping) {
         this.groupId = groupId;
         this.artifactId = artifactId;
         this.version = version;
@@ -28,7 +28,7 @@ public class ExpathDependencySet {
     @Override
     public String toString() {
 
-        return groupId + ":" + artifactId + ":" + version  + (classifier != null ? ":" + classifier : "") + " " + outputDirectory;
+        return groupId + ":" + artifactId + (classifier != null ? ":jar:" + classifier : "") + ":" + version   + " " + outputDirectory;
     }
 
     public String getGroupId() {

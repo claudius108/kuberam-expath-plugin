@@ -224,9 +224,11 @@ public class MakeXarMojo extends AbstractMojo {
 
 			Artifact artifact;
 			try {
-				artifact = new DefaultArtifact(dependencySet.getGroupId() + ":" + dependencySet.getArtifactId() + ":"
-						+ dependencySet.getVersion()
-						+ (dependencySet.getClassifier() == null ? "" : ":" + dependencySet.getClassifier()));
+				artifact = new DefaultArtifact(dependencySet.getGroupId()
+						+ ":" + dependencySet.getArtifactId()
+						+ (dependencySet.getClassifier() == null ? "" : ":jar:" + dependencySet.getClassifier())
+						+ ":" + dependencySet.getVersion()
+				);
 			} catch (IllegalArgumentException e) {
 				throw new MojoFailureException(e.getMessage(), e);
 			}
