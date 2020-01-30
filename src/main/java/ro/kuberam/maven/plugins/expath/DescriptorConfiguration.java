@@ -56,9 +56,12 @@ public class DescriptorConfiguration extends Xpp3Dom {
 				String outputFileNameMapping = Optional.ofNullable(outputFileNameMappingElement).map(Xpp3Dom::getValue)
 						.orElse("");
 
+				Xpp3Dom classifier = dependencySetChild.getChild("classifier");
+
 				dependencySets.add(new ExpathDependencySet(dependencySetChild.getChild("groupId").getValue(),
 						dependencySetChild.getChild("artifactId").getValue(),
-						dependencySetChild.getChild("version").getValue(), outputDirectory, outputFileNameMapping));
+						dependencySetChild.getChild("version").getValue(),
+						(classifier == null) ? null : classifier.getValue(), outputDirectory, outputFileNameMapping));
 			}
 		}
 
