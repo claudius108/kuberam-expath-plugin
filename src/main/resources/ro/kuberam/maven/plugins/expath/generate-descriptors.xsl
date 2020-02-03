@@ -141,7 +141,12 @@
 				</xsl:if>
 				<xsl:if test="/*/pkg:changelog">
 					<changelog>
-						<xsl:copy-of select="/*/pkg:changelog/node()" />
+						<xsl:for-each select="/*/pkg:changelog/*">
+							<change>
+								<xsl:copy-of select="@*" />
+								<xsl:copy-of select="*" />
+							</change>
+						</xsl:for-each>					
 					</changelog>
 				</xsl:if>
 				<xsl:if test="/*/pkg:deployed">
